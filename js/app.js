@@ -2,28 +2,36 @@ console.log("JavaScript is running...");
 
 
 // DEVELOPER NOTES //
-// Create all units for Falkenrath and Werewolves and balance them.
 // Create team selection functions with a unit budget of 300 points. See notebook for budget and population balancing.
-// Create combat functions and user interface.
+// Create combat functions and user interface such as rangefinding and targeting. This includes a turn counter that tracks each player's move and adds six seconds to a metaphorical stopwatch.
 // Create remaining factions and units.
 // Add art and styling to game.
+// Crit hit and miss.
 
 
-// GLOBAL VARIABLES //
+// GLOBAL FUNCTIONS AND VARIABLES //
+const d20 = (min, max) => {
+	return Math.floor((Math.random() * (21 - 0)) + 0);
+}; // Don't incorporate until targeting is built.
 
 
 // This is the field in which combat actually takes place.
-const gameBoard = [ [0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,]
+const gameBoard = [ [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
 ]
 
 for (let i = gameBoard.length - 1; i >= 0; i--) {
@@ -36,9 +44,14 @@ for (let i = gameBoard.length - 1; i >= 0; i--) {
 
 
 // CLASSES //
+// Player class.
+class Player {
+	constructor(name, faction, actionPoints, unitBudget)
+};
+
 // Basic unit class.
 class BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
 		this.name = name;
 		this.gender = gender;
 		this.age = age;
@@ -50,17 +63,24 @@ class BasicUnit {
 		this.dex = dex;
 		this.int = int;
 		this.speed = speed;
-		this.inventory = [weapon1, weapon2, utility];
+		this.weapon1 = weapon1;
+		this.weapon2 = weapon2; 
+		this.utility = utility;
+		this.budgetCost = budgetCost;
 	}
-	basicAttack() {
-		if (this.inventory[0].type === "Melee") {
-			return this.inventory[0].damage() + this.strMod();
-		} else {
-			return this.inventory[0].damage() + this.dexMod();
+	primaryAttack() {
+		if (this.weapon1.type === "Melee") {
+			return this.weapon1.damage() + this.strMod();
+		} else if (this.weapon1.type === "Ranged") {
+			return this.weapon1.damage() + this.dexMod();
 		} 
 	}
-	basicSpell() {
-
+	secondaryAttack() {
+		if (this.weapon2.type === "Melee") {
+			return this.weapon2.damage() + this.strMod();
+		} else if (this.weapon2.type === "Ranged") {
+			return this.weapon2.damage() + this.dexMod();
+		}
 	}
 	strMod() {
 		return Math.floor((this.str - 10)/2);
@@ -71,12 +91,17 @@ class BasicUnit {
 	intMod() {
 		return Math.floor((this.int - 10)/2);
 	}
+	deathState() {
+		if (this.hp <= 0) {
+			this.detach();
+		}
+	}
 };
 
 // Undead faction template.
 class Undead extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
 	}
 	plagued() {
 
@@ -85,8 +110,8 @@ class Undead extends BasicUnit {
 
 // Ausonia faction template.
 class Ausonia extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
 	}
 	holySymbol () {
 
@@ -95,23 +120,30 @@ class Ausonia extends BasicUnit {
 
 // Falkenrath faction template.
 class Falkenrath extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
 	}
 	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
-	basicAttack() {
+	primaryAttack() {
 		if (this.str > this.dex) {
-			return this.inventory[0].damage() + this.strMod();
+			return this.weapon1.damage() + this.strMod();
 		} else {
-			return this.inventory[0].damage() + this.dexMod();
+			return this.weapon1.damage() + this.dexMod();
+		}
+	}
+	secondaryAttack() {
+		if (this.str > this.dex) {
+			return this.weapon2.damage() + this.strMod();
+		} else {
+			return this.weapon2.damage() + this.dexMod();
 		}
 	}
 };
 
 // Werewolf faction template.
 class Werewolf extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility,);
 	}
 	// Werewolves can temporarily shift from human to beast form once per game, buffing strength and hp while nerfing the rest.
 	shapeShift() {
@@ -128,8 +160,8 @@ class Werewolf extends BasicUnit {
 
 // Demon faction template.
 class Demon extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
 	}
 };
 
@@ -144,48 +176,91 @@ class Weapon {
 };
 
 // WEAPONS OBJECTS //
+const brassKnuckles = new Weapon("Brass Knuckles", "Melee", 5);
+	brassKnuckles.damage = (min, max) => {
+		return Math.floor((Math.random() * (5 - 2)) + 2)
+	};
+
+const bite = new Weapon("Bite", "Melee", 5);
+	bite.damage = (min, max) => {
+		return Math.floor((Math.random() * (9 - 6)) + 6)
+	};	
+
 const vorpalSword = new Weapon("Vorpal Sword", "Melee",  5);
 	vorpalSword.damage = (min, max) => {
 		return Math.floor((Math.random() * (11 - 6)) + 6);
 	};
 
-const caestus = new Weapon("Caestus", "Melee", 5);
-	caestus.damage = (min, max) => {
-		return Math.floor((Math.random() * (5 - 2)) + 2)
-	};
+const hawk40 = new Weapon("Hawk .40", "Ranged", 15);
+	hawk40.damage = (min, max) => {
+		return Math.floor((Math.random() * (7 - 4) + 4));
+	}
 
-
-// FACTION HEROES //
-// UNDEAD HERO //
-// AUSONIA HERO //
-
-// FALKENRATH HERO //
-const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 14, 32, 10, 24, 14, 40, vorpalSword, "", "");
-
-// WEREWOLF HERO //
-const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 30, 14, 10, 30, caestus, "", "");
+const falcon1837 = new Weapon("Falcon 1837", "Ranged", 45);
+	falcon1837.damage = (min, max) => {
+		return Math.floor((Math.random() * (17 - 4)) + 4);
+	};	
 
 
 // FACTION UNITS //
 // UNDEAD UNITS //
+// UNDEAD HERO //
+
 // UNDEAD AUXILLARY //
 // UNDEAD PRIMARY //
 
 // AUSONIA UNITS //
+// AUSONIA HERO //
+
 // AUSONIA AUXILLARY //
 // AUSONIA PRIMARY //
 
+
 // FALKENRATH UNITS //
+// FALKENRATH HERO //
+const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 2, 0);
+
 // FALKENRATH AUXILLARY //
+// Falkenrath Enforcer
+const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 2, 75)
+
+// Falkenrath Undertaker
+const falkenrathUndertaker = new Falkenrath("Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 2, 75);
+
 // FALKENRATH PRIMARY //
+// Falkenrath Marksman
+const falkenrathMarksman = new Falkenrath("Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", 30, 50)
+
+// Falkenrath Bailiff
+const falkenrathBailiff = new Falkenrath("Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 2, 50);
+
+// Falkenrath Hound
+const falkenrathHound = new BasicUnit("FalkenrathHound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 2, 25);
+
 
 // WEREWOLF UNITS //
+// WEREWOLF HERO //
+const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 2, 0);
+
 // WEREWOLF AUXILLARY //
+// Kruin Outlaw/Terror of Kruin's Pass
+const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 2, 75)
+
+// Ulvenwald Mystic/Ulvenwald Primordial
+const ulvenwaldMystic = new Werewolf("Ulvenwald Mystic", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 2, 75);
+
 // WEREWOLF PRIMARY //
+// Highland Trapper/Gametrail Ravager
+const hihglandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50 )
+
+// Village Pariah/Relentless Predator
+const villagePariah = new Werewolf("Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 2, 50);
+
+// Estwald Greatwolf
+const estwaldGreatwolf = new BasicUnit("Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 2, 25)
+
 
 // DEMONS //
-
-
 
 
 
