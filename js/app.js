@@ -142,7 +142,7 @@ class Falkenrath extends BasicUnit {
 // Werewolf faction template.
 class Werewolf extends BasicUnit {
 	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility,);
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
 	}
 	// Werewolves can temporarily shift from human to beast form once per game, buffing strength and hp while nerfing the rest.
 	shapeShift() {
@@ -251,14 +251,14 @@ const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Hu
 
 // WEREWOLF AUXILLARY //
 // Kruin Outlaw/Terror of Kruin's Pass
-const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75)
+const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75);
 
 // Ulvenwald Mystic/Ulvenwald Primordial
 const ulvenwaldMystic = new Werewolf("Ulvenwald Mystic", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75);
 
 // WEREWOLF PRIMARY //
 // Highland Trapper/Gametrail Ravager
-const hihglandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50);
+const highlandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50);
 
 // Village Pariah/Relentless Predator
 const villagePariah = new Werewolf("Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50);
@@ -272,30 +272,29 @@ const estwaldGreatwolf = new BasicUnit("Estwald Greatwolf", "Male/Female", "Unkn
 
 // GAMEPLAY //
 // PHASE ONE: TEAM CONSTRUCTION //
-const renderUnitList = () => {
+const player1 = new Player("Falkenrath", 2, 300);
+
+const player2 = new Player("Werewolves", 2, 300);
+
+
+	// Function that displays availale units for a specific faction and allows the player to buy them the appropriate cost.
+	// FALKENRATH FACTION CARDS //
+const createFaction1 = (e) => {
+	const renderUnitList = () => {
 	$("#purchased-units").empty();
 	for (let i = 0; i < player1.chosenUnits.length; i++) {
 		$("#purchased-units").append(`<li>${player1.chosenUnits[i].name}</li>`);
 	}
 };
-
-
-const player1 = new Player("Falkenrath", 2, 300);
-console.log(player1);
-
-const player2 = new Player("Werewolves", 2, 300);
-console.log(player2);
-
-	// Function that displays availale units for a specific faction and allows the player to buy them the appropriate cost.
-	// FALKENRATH FACTION CARDS //
-const createFaction1 = (e) => {
 	// When the function is called, the hero for the corresponding faction is pushed into the player's chosen units array.
 	player1.chosenUnits.push(falkenrathHero);
 
 	// This displays the current list of units that the player has bought, as well as their remaining budget.
+	$("body").append(`<div class="team-constructor"></div>`);
 	$(".team-constructor").append(`<div id="unit-budget">Reamining Unit Budget: ${player1.unitBudget}</div>`);
-	$(".team-constructor").append(`<div>Currently purchased units:</div><br>`);
+	$(".team-constructor").append(`<div>Falkenrath Units Purchased:</div><br>`);
 	$(".team-constructor").append(`<div id="purchased-units"><li>${player1.chosenUnits[0].name}</li></div>`);
+	$(".team-constructor").append(`<br><p>Choose your units:</p><br>`);
 
 		
 	// This is a button that will clear the built unit list and completely clear it while refunding all budget points.
@@ -308,32 +307,46 @@ const refundUnits = () => {
 		player1.chosenUnits.push(falkenrathHero);
 		renderUnitList();
 		refundUnits();
+		commitUnits();
 	});
 };
 
 refundUnits();
 
 
+// This function will accept the current unit selection and change the screen to the next faction's purchase opportunities.
+const commitUnits = () => {
+	$("#unit-budget").append(`<button id="commit-units">Commit Units</button>`);
+	$("#commit-units").on("click", () => {
+		$(".team-constructor").remove();
+		createFaction2();
+	});
+};
+
+commitUnits();
+
+
 	// The following are a set of "cards" that display each unit's informatin and a button allowing their purchase.
 	// FALKENRATH ENFORCER CARD //
-	$(".team-constructor").append(`<br><p>Choose your units:</p>`)
-	$(".team-constructor").append(`<div id="enforcer"><button id="enforcer">${falkenrathEnforcer.name}</button></div>`);
+	$(".team-constructor").append(`<div id="enforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
 	$("#enforcer").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		} else {
 			player1.chosenUnits.push(falkenrathEnforcer);
 			player1.unitBudget -= falkenrathEnforcer.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		}
 	});
 
 	// Budget Cost
-	$("#enforcer").append(`<br><br><li>Budget Cost: ${falkenrathEnforcer.budgetCost}</li>`);
+	$("#enforcer").append(`<li>Budget Cost: ${falkenrathEnforcer.budgetCost}</li>`);
 
 	// Description
 	$("#enforcer").append(`<p>The ${falkenrathEnforcer.name} acts as the syndicate's loan shark, seeking out unpaid dues and putting hits on those who disobey Falkenrath law.</p>`);
@@ -353,23 +366,25 @@ refundUnits();
 
 
 	// FALKENRATH UNDERTAKER CARD //
-	$(".team-constructor").append(`<br><div id="undertaker"><button id="undertaker">${falkenrathUndertaker.name}</button></div>`);
+	$(".team-constructor").append(`<br><div id="undertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
 	$("#undertaker").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		} else {
 			player1.chosenUnits.push(falkenrathUndertaker);
 			player1.unitBudget -= falkenrathUndertaker.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		}
 	});
 
 	// Budget Cost
-	$("#undertaker").append(`<br><br><li>Budget Cost: ${falkenrathUndertaker.budgetCost}</li>`);
+	$("#undertaker").append(`<li>Budget Cost: ${falkenrathUndertaker.budgetCost}</li>`);
 
 	// Description
 	$("#undertaker").append(`<p>The ${falkenrathUndertaker.name} are mysterious entities working for the Falkenrath. No one knows where they come from, or what they look like under their disturbing masks.</p>`);
@@ -385,27 +400,29 @@ refundUnits();
 
 	// Inventory
 	$("#undertaker").append(`<p>Inventory:</p>`);
-	$("#undertaker").append(`<li>Primary Weapon: ${falkenrathUndertaker.weapon1.name}</li>`);
+	$("#undertaker").append(`<li>Primary Weapon: ${falkenrathUndertaker.weapon1.name}</li><br>`);
 
 
 	// FALKENRATH MARKSMAN CARD //
-	$(".team-constructor").append(`<br><div id="marksman"><button id="marksman">${falkenrathMarksman.name}</button></div>`);
+	$(".team-constructor").append(`<br><div id="marksman"><h3>${falkenrathMarksman.name}</h3></div>`);
 	$("#marksman").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		} else {
 			player1.chosenUnits.push(falkenrathMarksman);
 			player1.unitBudget -= falkenrathMarksman.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		}
 	});
 
 	// Budget Cost
-	$("#marksman").append(`<br><br><li>Budget Cost: ${falkenrathMarksman.budgetCost}</li>`);
+	$("#marksman").append(`<li>Budget Cost: ${falkenrathMarksman.budgetCost}</li>`);
 
 	// Description
 	$("#marksman").append(`<p>The ${falkenrathMarksman.name} is a role specifically reserved for female members of the Falkenrath Police. Their slight bodies allow them greater maneuverability, making excellent long range assailants.</p>`);
@@ -425,23 +442,25 @@ refundUnits();
 
 
 	// FALKENRATH BAILIFF CARD //
-	$(".team-constructor").append(`<br><div id="bailiff"><button id="bailiff">${falkenrathBailiff.name}</button></div>`);
+	$(".team-constructor").append(`<br><div id="bailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
 		$("#bailiff").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		} else {
 			player1.chosenUnits.push(falkenrathBailiff);
 			player1.unitBudget -= falkenrathBailiff.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		}
 	});
 
 	// Budget Cost
-	$("#bailiff").append(`<br><br><li>Budget Cost: ${falkenrathBailiff.budgetCost}</li>`);
+	$("#bailiff").append(`<li>Budget Cost: ${falkenrathBailiff.budgetCost}</li>`);
 
 	// Description
 	$("#bailiff").append(`<p>The ${falkenrathBailiff.name}. These are the bulk of the Falkenrath Police. They are the iconic stone cold faces that instill fear and submissiveness into the subjects of the Falkenrath Syndicate.</p>`);
@@ -461,23 +480,25 @@ refundUnits();
 
 
 	// FALKENRATH HOUND CARD //
-	$(".team-constructor").append(`<br><div id="hound"><button id="hound">${falkenrathHound.name}</button></div>`);
+	$(".team-constructor").append(`<br><div id="hound"><h3>${falkenrathHound.name}<h3></div>`);
 			$("#hound").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		} else {
 			player1.chosenUnits.push(falkenrathHound);
 			player1.unitBudget -= falkenrathHound.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
 			refundUnits();
+			commitUnits();
 		}
 	});
 
 	// Budget Cost
-	$("#hound").append(`<br><br><li>Budget Cost: ${falkenrathHound.budgetCost}</li>`);
+	$("#hound").append(`<li>Budget Cost: ${falkenrathHound.budgetCost}</li>`);
 
 	// Description
 	$("#hound").append(`<p>The ${falkenrathHound.name}s are Gentled German Shepherds. Already being dogs bred for police work, these beasts are truly terrifying to be on the receiving end of their aggression.</p>`);
@@ -502,12 +523,240 @@ createFaction1();
 
 // WEREWOLF FACTION CARDS //
 const createFaction2 = (e) => {
+	const renderUnitList = () => {
+	$("#purchased-units").empty();
+	for (let i = 0; i < player2.chosenUnits.length; i++) {
+		$("#purchased-units").append(`<li>${player2.chosenUnits[i].name}</li>`);
+	}
+};
+		// When the function is called, the hero for the corresponding faction is pushed into the player's chosen units array.
 	player2.chosenUnits.push(werewolfHero);
-	$(".team-constructor").append(`<div><button>${kruinOutlaw.name}</button><div>`);
-	$(".team-constructor").append(`<div><button>${ulvenwaldMystic.name}</button><div>`);
-	$(".team-constructor").append(`<div><button>${hihglandTrapper.name}</button><div>`);
-	$(".team-constructor").append(`<div><button>${villagePariah.name}</button><div>`);
-	$(".team-constructor").append(`<div><button>${estwaldGreatwolf.name}</button><div>`);
+
+	// This displays the current list of units that the player has bought, as well as their remaining budget.
+	$("body").append(`<div class="team-constructor"></div>`);
+	$(".team-constructor").append(`<div id="unit-budget">Reamining Unit Budget: ${player2.unitBudget}</div>`);
+	$(".team-constructor").append(`<div>Werewolf Units Purchased:</div><br>`);
+	$(".team-constructor").append(`<div id="purchased-units"><li>${player2.chosenUnits[0].name}</li></div>`);
+	$(".team-constructor").append(`<br><p>Choose your units:</p><br>`);
+
+		
+	// This is a button that will clear the built unit list and completely clear it while refunding all budget points.
+const refundUnits = () => {
+	$("#unit-budget").append(`<button id="refund-units">Refund Units</button>`);
+	$("#refund-units").on("click", () => {
+		player2.chosenUnits = [];
+		player2.unitBudget = 300;
+		$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+		player2.chosenUnits.push(werewolfHero);
+		renderUnitList();
+		refundUnits();
+		commitUnits();
+	});
+};
+
+refundUnits();
+
+
+// This function will accept the current unit selection and change the screen to the next faction's purchase opportunities.
+const commitUnits = () => {
+	$("#unit-budget").append(`<button id="commit-units">Commit Units</button>`);
+	$("#commit-units").on("click", () => {
+		$(".team-constructor").remove();
+	});
+};
+
+commitUnits();
+
+	
+	// WEREWOLF FACTION CARDS //
+	// KRUIN OUTLAW CARD //
+	$(".team-constructor").append(`<div id="kruinOutlaw"><h3>${kruinOutlaw.name}</h3><div>`);
+		$("#kruinOutlaw").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(kruinOutlaw);
+			player2.unitBudget -= kruinOutlaw.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#kruinOutlaw").append(`<li>Budget Cost: ${kruinOutlaw.budgetCost}</li>`);
+
+	// Description
+	$("#kruinOutlaw").append(`<p>The ${kruinOutlaw.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+
+	// Stats
+	$("#kruinOutlaw").append(`<p>Unit Stats:</p>`);
+	$("#kruinOutlaw").append(`<li>Hit Points: ${kruinOutlaw.hp}</li>`);
+	$("#kruinOutlaw").append(`<li>Armor Class: ${kruinOutlaw.ac}</li>`);
+	$("#kruinOutlaw").append(`<li>Strength: ${kruinOutlaw.str}</li>`);
+	$("#kruinOutlaw").append(`<li>Dexterity: ${kruinOutlaw.dex}</li>`);
+	$("#kruinOutlaw").append(`<li>Intelligence: ${kruinOutlaw.int}</li>`);
+	$("#kruinOutlaw").append(`<li>Speed: ${kruinOutlaw.speed}</li>`);
+
+	// Inventory
+	$("#kruinOutlaw").append(`<p>Inventory:</p>`);
+	$("#kruinOutlaw").append(`<li>Primary Weapon: ${kruinOutlaw.weapon1.name}</li><br>`);
+
+
+	// ULVENWALD MYSTIC CARD //
+	$(".team-constructor").append(`<div id="ulvenwaldMystic"><h3>${ulvenwaldMystic.name}</h3><div>`);
+			$("#ulvenwaldMystic").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(ulvenwaldMystic);
+			player2.unitBudget -= ulvenwaldMystic.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#ulvenwaldMystic").append(`<li>Budget Cost: ${ulvenwaldMystic.budgetCost}</li>`);
+
+	// Description
+	$("#ulvenwaldMystic").append(`<p>The ${ulvenwaldMystic.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+
+	// Stats
+	$("#ulvenwaldMystic").append(`<p>Unit Stats:</p>`);
+	$("#ulvenwaldMystic").append(`<li>Hit Points: ${ulvenwaldMystic.hp}</li>`);
+	$("#ulvenwaldMystic").append(`<li>Armor Class: ${ulvenwaldMystic.ac}</li>`);
+	$("#ulvenwaldMystic").append(`<li>Strength: ${ulvenwaldMystic.str}</li>`);
+	$("#ulvenwaldMystic").append(`<li>Dexterity: ${ulvenwaldMystic.dex}</li>`);
+	$("#ulvenwaldMystic").append(`<li>Intelligence: ${ulvenwaldMystic.int}</li>`);
+	$("#ulvenwaldMystic").append(`<li>Speed: ${ulvenwaldMystic.speed}</li>`);
+
+	// Inventory
+	$("#ulvenwaldMystic").append(`<p>Inventory:</p>`);
+	$("#ulvenwaldMystic").append(`<li>Primary Weapon: ${ulvenwaldMystic.weapon1.name}</li><br>`);
+
+
+	// HIGHLAND TRAPPER CARD //
+	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
+			$("#highlandTrapper").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(highlandTrapper);
+			player2.unitBudget -= highlandTrapper.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#highlandTrapper").append(`<li>Budget Cost: ${highlandTrapper.budgetCost}</li>`);
+
+	// Description
+	$("#highlandTrapper").append(`<p>The ${highlandTrapper.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+
+	// Stats
+	$("#highlandTrapper").append(`<p>Unit Stats:</p>`);
+	$("#highlandTrapper").append(`<li>Hit Points: ${highlandTrapper.hp}</li>`);
+	$("#highlandTrapper").append(`<li>Armor Class: ${highlandTrapper.ac}</li>`);
+	$("#highlandTrapper").append(`<li>Strength: ${highlandTrapper.str}</li>`);
+	$("#highlandTrapper").append(`<li>Dexterity: ${highlandTrapper.dex}</li>`);
+	$("#highlandTrapper").append(`<li>Intelligence: ${highlandTrapper.int}</li>`);
+	$("#highlandTrapper").append(`<li>Speed: ${highlandTrapper.speed}</li>`);
+
+	// Inventory
+	$("#highlandTrapper").append(`<p>Inventory:</p>`);
+	$("#highlandTrapper").append(`<li>Primary Weapon: ${highlandTrapper.weapon1.name}</li><br>`);
+
+
+	// VILLAGE PARIAH CARD //
+	$(".team-constructor").append(`<div id="villagePariah"><h3>${villagePariah.name}</h3><div>`);
+			$("#villagePariah").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(villagePariah);
+			player2.unitBudget -= villagePariah.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#villagePariah").append(`<li>Budget Cost: ${villagePariah.budgetCost}</li>`);
+
+	// Description
+	$("#villagePariah").append(`<p>The ${villagePariah.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+
+	// Stats
+	$("#villagePariah").append(`<p>Unit Stats:</p>`);
+	$("#villagePariah").append(`<li>Hit Points: ${villagePariah.hp}</li>`);
+	$("#villagePariah").append(`<li>Armor Class: ${villagePariah.ac}</li>`);
+	$("#villagePariah").append(`<li>Strength: ${villagePariah.str}</li>`);
+	$("#villagePariah").append(`<li>Dexterity: ${villagePariah.dex}</li>`);
+	$("#villagePariah").append(`<li>Intelligence: ${villagePariah.int}</li>`);
+	$("#villagePariah").append(`<li>Speed: ${villagePariah.speed}</li>`);
+
+	// Inventory
+	$("#villagePariah").append(`<p>Inventory:</p>`);
+	$("#villagePariah").append(`<li>Primary Weapon: ${villagePariah.weapon1.name}</li><br>`);
+
+
+	// ESTWALD GREATWOLF CARD //
+	$(".team-constructor").append(`<div id="estwaldGreatwolf"><h3>${estwaldGreatwolf.name}<h3><div>`);
+			$("#estwaldGreatwolf").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(estwaldGreatwolf);
+			player2.unitBudget -= estwaldGreatwolf.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#estwaldGreatwolf").append(`<li>Budget Cost: ${estwaldGreatwolf.budgetCost}</li>`);
+
+	// Description
+	$("#estwaldGreatwolf").append(`<p>The ${estwaldGreatwolf.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+
+	// Stats
+	$("#estwaldGreatwolf").append(`<p>Unit Stats:</p>`);
+	$("#estwaldGreatwolf").append(`<li>Hit Points: ${estwaldGreatwolf.hp}</li>`);
+	$("#estwaldGreatwolf").append(`<li>Armor Class: ${estwaldGreatwolf.ac}</li>`);
+	$("#estwaldGreatwolf").append(`<li>Strength: ${estwaldGreatwolf.str}</li>`);
+	$("#estwaldGreatwolf").append(`<li>Dexterity: ${estwaldGreatwolf.dex}</li>`);
+	$("#estwaldGreatwolf").append(`<li>Intelligence: ${estwaldGreatwolf.int}</li>`);
+	$("#estwaldGreatwolf").append(`<li>Speed: ${estwaldGreatwolf.speed}</li>`);
+
+	// Inventory
+	$("#estwaldGreatwolf").append(`<p>Inventory:</p>`);
+	$("#estwaldGreatwolf").append(`<li>Primary Weapon: ${estwaldGreatwolf.weapon1.name}</li><br>`);
 };
 
 
