@@ -2,7 +2,8 @@ console.log("JavaScript is running...");
 
 
 // DEVELOPER NOTES //
-// Create combat functions and user interface such as rangefinding and targeting, which will be a function of the unit itself and not the game object. This includes a turn counter that tracks each player's move and adds six seconds to a metaphorical stopwatch.
+// Create a game object that contains the gameboard, pseudo-clock, and turn tracker.
+// Append
 // Create remaining factions and units.
 // Add art and styling to game.
 // Add factions units into an array, then create a loop to print stats on unit cards.
