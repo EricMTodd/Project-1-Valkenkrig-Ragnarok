@@ -16,14 +16,19 @@ class Player {
 	constructor(faction, actionPoints, unitBudget) {
 		this.faction = faction;
 		this.actionPoints = actionPoints;
-		this.unitBudget = 300;
+		this.unitBudget = 150;
 		this.chosenUnits = [];
+	}
+	unitSpawn() {
+		for (let i = 0; i < this.chosenUnits.length; i++) {
+
+		}
 	}
 };
 
 // Basic unit class.
 class BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
 		this.name = name;
 		this.gender = gender;
 		this.age = age;
@@ -39,6 +44,10 @@ class BasicUnit {
 		this.weapon2 = weapon2; 
 		this.utility = utility;
 		this.budgetCost = budgetCost;
+		this.artwork = artwork;
+	}
+	determineHit() {
+
 	}
 	primaryAttack() {
 		if (this.weapon1.type === "Melee") {
@@ -63,17 +72,12 @@ class BasicUnit {
 	intMod() {
 		return Math.floor((this.int - 10)/2);
 	}
-	deathState() {
-		if (this.hp <= 0) {
-			this.detach();
-		}
-	}
 };
 
 // Undead faction template.
 class Undead extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	plagued() {
 
@@ -82,8 +86,8 @@ class Undead extends BasicUnit {
 
 // Ausonia faction template.
 class Ausonia extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	holySymbol () {
 
@@ -92,8 +96,8 @@ class Ausonia extends BasicUnit {
 
 // Falkenrath faction template.
 class Falkenrath extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
 	primaryAttack() {
@@ -114,8 +118,8 @@ class Falkenrath extends BasicUnit {
 
 // Werewolf faction template.
 class Werewolf extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	// Werewolves can temporarily shift from human to beast form once per game, buffing strength and hp while nerfing the rest.
 	shapeShift() {
@@ -132,8 +136,8 @@ class Werewolf extends BasicUnit {
 
 // Demon faction template.
 class Demon extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost);
+	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 };
 
@@ -198,46 +202,46 @@ const falcon1837 = new Weapon("Falcon 1837", "Ranged", 45);
 
 // FALKENRATH UNITS //
 // FALKENRATH HERO //
-const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0);
+const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian Falkenrath.png");
 
 // FALKENRATH AUXILLARY //
 // Falkenrath Enforcer
-const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75);
+const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath Enforcer.png");
 
 // Falkenrath Undertaker
-const falkenrathUndertaker = new Falkenrath("Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75);
+const falkenrathUndertaker = new Falkenrath("Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath Undertaker.png");
 
 // FALKENRATH PRIMARY //
 // Falkenrath Marksman
-const falkenrathMarksman = new Falkenrath("Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50);
+const falkenrathMarksman = new Falkenrath("Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50, "images/unitTokens/Falkenrath Marksman.png");
 
 // Falkenrath Bailiff
-const falkenrathBailiff = new Falkenrath("Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50);
+const falkenrathBailiff = new Falkenrath("Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50, "images/unitTokens/Falkenrath Bailiff.png");
 
 // Falkenrath Hound
-const falkenrathHound = new BasicUnit("Falkenrath Hound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25);
+const falkenrathHound = new BasicUnit("Falkenrath Hound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Falkenrath Hound.png");
 
 
 // WEREWOLF UNITS //
 // WEREWOLF HERO //
-const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0);
+const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon Schrader.png");
 
 // WEREWOLF AUXILLARY //
 // Kruin Outlaw/Terror of Kruin's Pass
-const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75);
+const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png");
 
 // Ulvenwald Ranger/Ulvenwald Primordial
-const ulvenwaldRanger = new Werewolf("Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75);
+const ulvenwaldRanger = new Werewolf("Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75, "images/unitTokens/WerewolfF2.png");
 
 // WEREWOLF PRIMARY //
 // Highland Trapper/Gametrail Ravager
-const highlandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50);
+const highlandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50, "images/unitTokens/WerewolfM8.png");
 
 // Village Pariah/Relentless Predator
-const villagePariah = new Werewolf("Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50);
+const villagePariah = new Werewolf("Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
 
 // Estwald Greatwolf
-const estwaldGreatwolf = new BasicUnit("Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25)
+const estwaldGreatwolf = new BasicUnit("Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Wolf1.png")
 
 
 // DEMONS //
@@ -302,7 +306,7 @@ commitUnits();
 	// The following are a set of "cards" that display each unit's informatin and a button allowing their purchase.
 	// FALKENRATH ENFORCER CARD //
 	$(".team-constructor").append(`<div id="enforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
-	$("#enforcer").append(`<img src="images/unitTokens/Falkenrath Enforcer.png">`);
+	$("#enforcer").append(`<img src="${falkenrathEnforcer.artwork}">`);
 
 	$("#enforcer").on("click", () => {
 		if (player1.unitBudget === 0) {
@@ -342,7 +346,7 @@ commitUnits();
 
 	// FALKENRATH UNDERTAKER CARD //
 	$(".team-constructor").append(`<br><div id="undertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
-	$("#undertaker").append(`<img src="images/unitTokens/Falkenrath Undertaker.png">`);
+	$("#undertaker").append(`<img src="${falkenrathUndertaker.artwork}">`);
 	$("#undertaker").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -381,7 +385,7 @@ commitUnits();
 
 	// FALKENRATH MARKSMAN CARD //
 	$(".team-constructor").append(`<br><div id="marksman"><h3>${falkenrathMarksman.name}</h3></div>`);
-	$("#marksman").append(`<img src="images/unitTokens/Falkenrath Marksman.png">`);
+	$("#marksman").append(`<img src="${falkenrathMarksman.artwork}">`);
 	$("#marksman").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -420,7 +424,7 @@ commitUnits();
 
 	// FALKENRATH BAILIFF CARD //
 	$(".team-constructor").append(`<br><div id="bailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
-	$("#bailiff").append(`<img src="images/unitTokens/Falkenrath Bailiff.png">`);
+	$("#bailiff").append(`<img src="${falkenrathBailiff.artwork}">`);
 		$("#bailiff").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -459,7 +463,7 @@ commitUnits();
 
 	// FALKENRATH HOUND CARD //
 	$(".team-constructor").append(`<br><div id="hound"><h3>${falkenrathHound.name}<h3></div>`);
-	$("#hound").append(`<img src="images/unitTokens/Falkenrath Hound.png">`);
+	$("#hound").append(`<img src="${falkenrathHound.artwork}">`);
 			$("#hound").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -551,7 +555,7 @@ commitUnits();
 	// WEREWOLF FACTION CARDS //
 	// KRUIN OUTLAW CARD //
 	$(".team-constructor").append(`<div id="kruinOutlaw"><h3>${kruinOutlaw.name}</h3><div>`);
-	$("#kruinOutlaw").append(`<img src="images/unitTokens/WerewolfF3.png">`);
+	$("#kruinOutlaw").append(`<img src="${kruinOutlaw.artwork}">`);
 		$("#kruinOutlaw").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -590,7 +594,7 @@ commitUnits();
 
 	// ULVENWALD RANGER CARD //
 	$(".team-constructor").append(`<div id="ulvenwaldRanger"><h3>${ulvenwaldRanger.name}</h3><div>`);
-	$("#ulvenwaldRanger").append(`<img src="images/unitTokens/WerewolfF2.png">`);
+	$("#ulvenwaldRanger").append(`<img src="${ulvenwaldRanger.artwork}">`);
 			$("#ulvenwaldRanger").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -611,7 +615,7 @@ commitUnits();
 	$("#ulvenwaldRanger").append(`<li>Budget Cost: ${ulvenwaldRanger.budgetCost}</li>`);
 
 	// Description
-	$("#ulvenwaldRanger").append(`<p>The ${ulvenwaldRanger.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+	$("#ulvenwaldRanger").append(`<p>The ${ulvenwaldRanger.name} estranged from her village at a young age, she has honed her skills to be a lethal hunter. She ensures the safety and balance between warring tribes of werewolves as game populations drastically decline.</p>`);
 
 	// Stats
 	$("#ulvenwaldRanger").append(`<p>Unit Stats:</p>`);
@@ -629,7 +633,7 @@ commitUnits();
 
 	// HIGHLAND TRAPPER CARD //
 	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
-	$("#highlandTrapper").append(`<img src="images/unitTokens/WerewolfM8.png">`);
+	$("#highlandTrapper").append(`<img src="${highlandTrapper.artwork}">`);
 			$("#highlandTrapper").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -650,7 +654,7 @@ commitUnits();
 	$("#highlandTrapper").append(`<li>Budget Cost: ${highlandTrapper.budgetCost}</li>`);
 
 	// Description
-	$("#highlandTrapper").append(`<p>The ${highlandTrapper.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+	$("#highlandTrapper").append(`<p>The ${highlandTrapper.name} is a seasoned tracker and hunter, native to the foothills of Kruin's Pass.</p>`);
 
 	// Stats
 	$("#highlandTrapper").append(`<p>Unit Stats:</p>`);
@@ -668,7 +672,7 @@ commitUnits();
 
 	// VILLAGE PARIAH CARD //
 	$(".team-constructor").append(`<div id="villagePariah"><h3>${villagePariah.name}</h3><div>`);
-	$("#villagePariah").append(`<img src="images/unitTokens/WerewolfM3.png">`);
+	$("#villagePariah").append(`<img src="${villagePariah.artwork}">`);
 			$("#villagePariah").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -689,7 +693,7 @@ commitUnits();
 	$("#villagePariah").append(`<li>Budget Cost: ${villagePariah.budgetCost}</li>`);
 
 	// Description
-	$("#villagePariah").append(`<p>The ${villagePariah.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+	$("#villagePariah").append(`<p>The ${villagePariah.name} the local punching bag is out looking for trouble.</p>`);
 
 	// Stats
 	$("#villagePariah").append(`<p>Unit Stats:</p>`);
@@ -707,7 +711,7 @@ commitUnits();
 
 	// ESTWALD GREATWOLF CARD //
 	$(".team-constructor").append(`<div id="estwaldGreatwolf"><h3>${estwaldGreatwolf.name}<h3><div>`);
-	$("#estwaldGreatwolf").append(`<img src="images/unitTokens/Wolf1.png">`);
+	$("#estwaldGreatwolf").append(`<img src="${estwaldGreatwolf.artwork}">`);
 			$("#estwaldGreatwolf").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -728,7 +732,7 @@ commitUnits();
 	$("#estwaldGreatwolf").append(`<li>Budget Cost: ${estwaldGreatwolf.budgetCost}</li>`);
 
 	// Description
-	$("#estwaldGreatwolf").append(`<p>The ${estwaldGreatwolf.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+	$("#estwaldGreatwolf").append(`<p>The ${estwaldGreatwolf.name} is a native predator of Valkenkrig. With the expansion of Falkenrath influence, they have been forced to lurk in shadows of the western forests.</p>`);
 
 	// Stats
 	$("#estwaldGreatwolf").append(`<p>Unit Stats:</p>`);
@@ -774,9 +778,10 @@ const initializeCombat = () => {
 			$(`.game-row-${i}`).append(`<div class="game-square game-square-${x}-${i}"></div>`)
 		}
 	};
+		for (let i = 0; i < player1.chosenUnits.length; i++) {
+			$(`.falkenrath-spawn`).append(`<div class="active-falkenrath-${i}"></div>`)
+		}
 };
-
-
 
 
 
