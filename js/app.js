@@ -3,39 +3,11 @@ console.log("JavaScript is running...");
 
 // DEVELOPER NOTES //
 // Create a game object that contains the gameboard, pseudo-clock, and turn tracker.
-// Append
+// Create a function that spawns units from the corner out.
 // Create remaining factions and units.
 // Add art and styling to game.
 // Add factions units into an array, then create a loop to print stats on unit cards.
 // Crit hit and miss.
-
-
-// This is the field in which combat actually takes place.
-const gameBoard = [ [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-					[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
-]
-
-for (let i = gameBoard.length - 1; i >= 0; i--) {
-	let row = gameBoard[i];
-	$(".game-board").append(`<div class="game-row-${i} game-row"></div>`)
-	for (let x = 0; x < row.length; x++) {
-		$(`.game-row-${i}`).append(`<div class="game-square game-square-${x}-${i}"></div>`)
-	}
-};
 
 
 // CLASSES //
@@ -569,6 +541,7 @@ const commitUnits = () => {
 	$("#unit-budget").append(`<button id="commit-units">Commit Units</button>`);
 	$("#commit-units").on("click", () => {
 		$(".team-constructor").remove();
+		initializeCombat();
 	});
 };
 
@@ -770,6 +743,77 @@ commitUnits();
 	$("#estwaldGreatwolf").append(`<p>Inventory:</p>`);
 	$("#estwaldGreatwolf").append(`<li>Primary Weapon: ${estwaldGreatwolf.weapon1.name}</li><br>`);
 };
+
+
+// PHASE TWO: COMBAT //
+// This is a function that will append all necessary gampelay interaction elements to the document.
+const initializeCombat = () => {
+	// This is the field in which combat actually takes place.
+	const gameBoard = [ [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+	]
+
+	for (let i = gameBoard.length - 1; i >= 0; i--) {
+		let row = gameBoard[i];
+		$(".game-board").append(`<div class="game-row-${i} game-row"></div>`)
+		for (let x = 0; x < row.length; x++) {
+			$(`.game-row-${i}`).append(`<div class="game-square game-square-${x}-${i}"></div>`)
+		}
+	};
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
