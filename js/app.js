@@ -230,7 +230,7 @@ const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "F
 
 // FALKENRATH AUXILLARY //
 // Falkenrath Enforcer
-const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75)
+const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75);
 
 // Falkenrath Undertaker
 const falkenrathUndertaker = new Falkenrath("Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75);
@@ -254,8 +254,8 @@ const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Hu
 // Kruin Outlaw/Terror of Kruin's Pass
 const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75);
 
-// Ulvenwald Mystic/Ulvenwald Primordial
-const ulvenwaldMystic = new Werewolf("Ulvenwald Mystic", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75);
+// Ulvenwald Ranger/Ulvenwald Primordial
+const ulvenwaldRanger = new Werewolf("Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75);
 
 // WEREWOLF PRIMARY //
 // Highland Trapper/Gametrail Ravager
@@ -330,6 +330,8 @@ commitUnits();
 	// The following are a set of "cards" that display each unit's informatin and a button allowing their purchase.
 	// FALKENRATH ENFORCER CARD //
 	$(".team-constructor").append(`<div id="enforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
+	$("#enforcer").append(`<img src="images/unitTokens/Falkenrath Enforcer.png">`);
+
 	$("#enforcer").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -368,6 +370,7 @@ commitUnits();
 
 	// FALKENRATH UNDERTAKER CARD //
 	$(".team-constructor").append(`<br><div id="undertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
+	$("#undertaker").append(`<img src="images/unitTokens/Falkenrath Undertaker.png">`);
 	$("#undertaker").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -406,6 +409,7 @@ commitUnits();
 
 	// FALKENRATH MARKSMAN CARD //
 	$(".team-constructor").append(`<br><div id="marksman"><h3>${falkenrathMarksman.name}</h3></div>`);
+	$("#marksman").append(`<img src="images/unitTokens/Falkenrath Marksman.png">`);
 	$("#marksman").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -444,6 +448,7 @@ commitUnits();
 
 	// FALKENRATH BAILIFF CARD //
 	$(".team-constructor").append(`<br><div id="bailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
+	$("#bailiff").append(`<img src="images/unitTokens/Falkenrath Bailiff.png">`);
 		$("#bailiff").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -482,6 +487,7 @@ commitUnits();
 
 	// FALKENRATH HOUND CARD //
 	$(".team-constructor").append(`<br><div id="hound"><h3>${falkenrathHound.name}<h3></div>`);
+	$("#hound").append(`<img src="images/unitTokens/Falkenrath Hound.png">`);
 			$("#hound").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
@@ -572,6 +578,7 @@ commitUnits();
 	// WEREWOLF FACTION CARDS //
 	// KRUIN OUTLAW CARD //
 	$(".team-constructor").append(`<div id="kruinOutlaw"><h3>${kruinOutlaw.name}</h3><div>`);
+	$("#kruinOutlaw").append(`<img src="images/unitTokens/WerewolfF3.png">`);
 		$("#kruinOutlaw").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -608,17 +615,18 @@ commitUnits();
 	$("#kruinOutlaw").append(`<li>Primary Weapon: ${kruinOutlaw.weapon1.name}</li><br>`);
 
 
-	// ULVENWALD MYSTIC CARD //
-	$(".team-constructor").append(`<div id="ulvenwaldMystic"><h3>${ulvenwaldMystic.name}</h3><div>`);
-			$("#ulvenwaldMystic").on("click", () => {
+	// ULVENWALD RANGER CARD //
+	$(".team-constructor").append(`<div id="ulvenwaldRanger"><h3>${ulvenwaldRanger.name}</h3><div>`);
+	$("#ulvenwaldRanger").append(`<img src="images/unitTokens/WerewolfF2.png">`);
+			$("#ulvenwaldRanger").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
 			renderUnitList();
 			refundUnits();
 			commitUnits();
 		} else {
-			player2.chosenUnits.push(ulvenwaldMystic);
-			player2.unitBudget -= ulvenwaldMystic.budgetCost;
+			player2.chosenUnits.push(ulvenwaldRanger);
+			player2.unitBudget -= ulvenwaldRanger.budgetCost;
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
 			renderUnitList();
 			refundUnits();
@@ -627,27 +635,28 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#ulvenwaldMystic").append(`<li>Budget Cost: ${ulvenwaldMystic.budgetCost}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Budget Cost: ${ulvenwaldRanger.budgetCost}</li>`);
 
 	// Description
-	$("#ulvenwaldMystic").append(`<p>The ${ulvenwaldMystic.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
+	$("#ulvenwaldRanger").append(`<p>The ${ulvenwaldRanger.name} haunts Kruin's pass -- the only way into The Ulvenwald from The Estwald. Survivors call her the siren of the Highlands.</p>`);
 
 	// Stats
-	$("#ulvenwaldMystic").append(`<p>Unit Stats:</p>`);
-	$("#ulvenwaldMystic").append(`<li>Hit Points: ${ulvenwaldMystic.hp}</li>`);
-	$("#ulvenwaldMystic").append(`<li>Armor Class: ${ulvenwaldMystic.ac}</li>`);
-	$("#ulvenwaldMystic").append(`<li>Strength: ${ulvenwaldMystic.str}</li>`);
-	$("#ulvenwaldMystic").append(`<li>Dexterity: ${ulvenwaldMystic.dex}</li>`);
-	$("#ulvenwaldMystic").append(`<li>Intelligence: ${ulvenwaldMystic.int}</li>`);
-	$("#ulvenwaldMystic").append(`<li>Speed: ${ulvenwaldMystic.speed}</li>`);
+	$("#ulvenwaldRanger").append(`<p>Unit Stats:</p>`);
+	$("#ulvenwaldRanger").append(`<li>Hit Points: ${ulvenwaldRanger.hp}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Armor Class: ${ulvenwaldRanger.ac}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Strength: ${ulvenwaldRanger.str}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Dexterity: ${ulvenwaldRanger.dex}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Intelligence: ${ulvenwaldRanger.int}</li>`);
+	$("#ulvenwaldRanger").append(`<li>Speed: ${ulvenwaldRanger.speed}</li>`);
 
 	// Inventory
-	$("#ulvenwaldMystic").append(`<p>Inventory:</p>`);
-	$("#ulvenwaldMystic").append(`<li>Primary Weapon: ${ulvenwaldMystic.weapon1.name}</li><br>`);
+	$("#ulvenwaldRanger").append(`<p>Inventory:</p>`);
+	$("#ulvenwaldRanger").append(`<li>Primary Weapon: ${ulvenwaldRanger.weapon1.name}</li><br>`);
 
 
 	// HIGHLAND TRAPPER CARD //
 	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
+	$("#highlandTrapper").append(`<img src="images/unitTokens/WerewolfM8.png">`);
 			$("#highlandTrapper").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -686,6 +695,7 @@ commitUnits();
 
 	// VILLAGE PARIAH CARD //
 	$(".team-constructor").append(`<div id="villagePariah"><h3>${villagePariah.name}</h3><div>`);
+	$("#villagePariah").append(`<img src="images/unitTokens/WerewolfM3.png">`);
 			$("#villagePariah").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
@@ -724,6 +734,7 @@ commitUnits();
 
 	// ESTWALD GREATWOLF CARD //
 	$(".team-constructor").append(`<div id="estwaldGreatwolf"><h3>${estwaldGreatwolf.name}<h3><div>`);
+	$("#estwaldGreatwolf").append(`<img src="images/unitTokens/Wolf1.png">`);
 			$("#estwaldGreatwolf").on("click", () => {
 		if (player2.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
