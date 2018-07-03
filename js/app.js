@@ -9,26 +9,25 @@ console.log("JavaScript is running...");
 // Add factions units into an array, then create a loop to print stats on unit cards.
 // Crit hit and miss.
 
+	let roll20 = (min, max) => {
+		return Math.floor((Math.random() * (20 - 1) + 1))	
+};
 
 // CLASSES //
 // Player class.
 class Player {
-	constructor(faction, actionPoints, unitBudget) {
+	constructor(id, faction, actionPoints, unitBudget) {
 		this.faction = faction;
 		this.actionPoints = actionPoints;
 		this.unitBudget = 150;
 		this.chosenUnits = [];
 	}
-	unitSpawn() {
-		for (let i = 0; i < this.chosenUnits.length; i++) {
-
-		}
-	}
 };
 
 // Basic unit class.
 class BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		this.id = id;
 		this.name = name;
 		this.gender = gender;
 		this.age = age;
@@ -45,9 +44,6 @@ class BasicUnit {
 		this.utility = utility;
 		this.budgetCost = budgetCost;
 		this.artwork = artwork;
-	}
-	determineHit() {
-
 	}
 	primaryAttack() {
 		if (this.weapon1.type === "Melee") {
@@ -72,12 +68,20 @@ class BasicUnit {
 	intMod() {
 		return Math.floor((this.int - 10)/2);
 	}
+	placeUnit(x, y) {
+		this.xCoordinate = x;
+		this.yCoordinate = y;
+	}
+	render() {
+		$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`).css("background-image", `url(${this.artwork})`);
+		// $(`#${this.id}`).css("background-image", `url(${this.artwork})`);
+	}
 };
 
 // Undead faction template.
 class Undead extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	plagued() {
 
@@ -86,8 +90,8 @@ class Undead extends BasicUnit {
 
 // Ausonia faction template.
 class Ausonia extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	holySymbol () {
 
@@ -96,8 +100,8 @@ class Ausonia extends BasicUnit {
 
 // Falkenrath faction template.
 class Falkenrath extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
 	primaryAttack() {
@@ -118,8 +122,8 @@ class Falkenrath extends BasicUnit {
 
 // Werewolf faction template.
 class Werewolf extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	// Werewolves can temporarily shift from human to beast form once per game, buffing strength and hp while nerfing the rest.
 	shapeShift() {
@@ -136,15 +140,15 @@ class Werewolf extends BasicUnit {
 
 // Demon faction template.
 class Demon extends BasicUnit {
-	constructor(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 };
 
 
 // WEAPONS CLASS //
 class Weapon {
-	constructor(name, type, range) {
+	constructor(id, name, type, range) {
 		this.name = name;
 		this.type = type;
 		this.range = range;
@@ -202,46 +206,46 @@ const falcon1837 = new Weapon("Falcon 1837", "Ranged", 45);
 
 // FALKENRATH UNITS //
 // FALKENRATH HERO //
-const falkenrathHero = new Falkenrath("Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian Falkenrath.png");
+const falkenrathHero = new Falkenrath("falkenrathHero", "Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian_Falkenrath.png");
 
 // FALKENRATH AUXILLARY //
 // Falkenrath Enforcer
-const falkenrathEnforcer = new Falkenrath("Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath Enforcer.png");
+const falkenrathEnforcer = new Falkenrath("falkenrathEnforcer", "Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath_Enforcer.png");
 
 // Falkenrath Undertaker
-const falkenrathUndertaker = new Falkenrath("Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath Undertaker.png");
+const falkenrathUndertaker = new Falkenrath("falkenrathUndertaker", "Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath_Undertaker.png");
 
 // FALKENRATH PRIMARY //
 // Falkenrath Marksman
-const falkenrathMarksman = new Falkenrath("Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50, "images/unitTokens/Falkenrath Marksman.png");
+const falkenrathMarksman = new Falkenrath("falkenrathMarksman", "Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50, "images/unitTokens/Falkenrath_Marksman.png");
 
 // Falkenrath Bailiff
-const falkenrathBailiff = new Falkenrath("Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50, "images/unitTokens/Falkenrath Bailiff.png");
+const falkenrathBailiff = new Falkenrath("falkenrathBailiff", "Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50, "images/unitTokens/Falkenrath_Bailiff.png");
 
 // Falkenrath Hound
-const falkenrathHound = new BasicUnit("Falkenrath Hound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Falkenrath Hound.png");
+const falkenrathHound = new BasicUnit("falkenrathHound", "Falkenrath Hound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Falkenrath_Hound.png");
 
 
 // WEREWOLF UNITS //
 // WEREWOLF HERO //
-const werewolfHero = new Werewolf("Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon Schrader.png");
+const werewolfHero = new Werewolf("werewolfHero", "Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon_Schrader.png");
 
 // WEREWOLF AUXILLARY //
 // Kruin Outlaw/Terror of Kruin's Pass
-const kruinOutlaw = new Werewolf("Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png");
+const kruinOutlaw = new Werewolf("kruinOutlaw", "Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png");
 
 // Ulvenwald Ranger/Ulvenwald Primordial
-const ulvenwaldRanger = new Werewolf("Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75, "images/unitTokens/WerewolfF2.png");
+const ulvenwaldRanger = new Werewolf("ulvenwaldRanger", "Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75, "images/unitTokens/WerewolfF2.png");
 
 // WEREWOLF PRIMARY //
 // Highland Trapper/Gametrail Ravager
-const highlandTrapper = new Werewolf("Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50, "images/unitTokens/WerewolfM8.png");
+const highlandTrapper = new Werewolf("highlandTrapper", "Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50, "images/unitTokens/WerewolfM8.png");
 
 // Village Pariah/Relentless Predator
-const villagePariah = new Werewolf("Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
+const villagePariah = new Werewolf("villagePariah", "Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
 
 // Estwald Greatwolf
-const estwaldGreatwolf = new BasicUnit("Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Wolf1.png")
+const estwaldGreatwolf = new BasicUnit("estwaldGreatwolf", "Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Wolf1.png")
 
 
 // DEMONS //
@@ -279,7 +283,7 @@ const refundUnits = () => {
 	$("#unit-budget").append(`<button id="refund-units">Refund Units</button>`);
 	$("#refund-units").on("click", () => {
 		player1.chosenUnits = [];
-		player1.unitBudget = 300;
+		player1.unitBudget = 150;
 		$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 		player1.chosenUnits.push(falkenrathHero);
 		renderUnitList();
@@ -528,7 +532,7 @@ const refundUnits = () => {
 	$("#unit-budget").append(`<button id="refund-units">Refund Units</button>`);
 	$("#refund-units").on("click", () => {
 		player2.chosenUnits = [];
-		player2.unitBudget = 300;
+		player2.unitBudget = 150;
 		$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
 		player2.chosenUnits.push(werewolfHero);
 		renderUnitList();
@@ -750,6 +754,201 @@ commitUnits();
 
 
 // PHASE TWO: COMBAT //
+// This function places the Falkenrath units chosen by the player in the last phase.
+	const falkenrathStart = () => {
+		if (player1.chosenUnits.length === 7) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(13, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 13);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(13, 13);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 6) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(13, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 13);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 5) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(13, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 4) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 3) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(15, 14);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 2) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+			player1.chosenUnits[0].placeUnit(14, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else if (player1.chosenUnits.length === 1) {
+			player1.chosenUnits[0].placeUnit(15, 15);
+			player1.chosenUnits[0].render();
+			player1.chosenUnits.splice(0, 1);
+		} else {
+			console.log("units placed");
+		}
+	};
+
+	// This function places the Werewolf units chosen by the player in the last phase.
+	const werewolfStart = () => {
+		if (player2.chosenUnits.length === 7) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(2, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 2);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(2, 2);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 6) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(2, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 2);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 5) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(2, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 4) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 3) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(0, 1);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 2) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+			player2.chosenUnits[0].placeUnit(1, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else if (player2.chosenUnits.length === 1) {
+			player2.chosenUnits[0].placeUnit(0, 0);
+			player2.chosenUnits[0].render();
+			player2.chosenUnits.splice(0, 1);
+		} else {
+			console.log("units placed");
+		}
+	};
 // This is a function that will append all necessary gampelay interaction elements to the document.
 const initializeCombat = () => {
 	// This is the field in which combat actually takes place.
@@ -778,9 +977,11 @@ const initializeCombat = () => {
 			$(`.game-row-${i}`).append(`<div class="game-square game-square-${x}-${i}"></div>`)
 		}
 	};
-		for (let i = 0; i < player1.chosenUnits.length; i++) {
-			$(`.falkenrath-spawn`).append(`<div class="active-falkenrath-${i}"></div>`)
-		}
+	$(".game-square").on("click", (e) => {
+		console.log(e.currentTarget);
+	});
+	falkenrathStart();
+	werewolfStart();
 };
 
 
