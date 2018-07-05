@@ -26,11 +26,10 @@ class Player {
 
 // Basic unit class.
 class BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
-		this.age = age;
 		this.faction = faction;
 		this.race = race;
 		this.hp = hp;
@@ -44,6 +43,14 @@ class BasicUnit {
 		this.utility = utility;
 		this.budgetCost = budgetCost;
 		this.artwork = artwork;
+	}
+	placeUnit(x, y) {
+		this.xCoordinate = x;
+		this.yCoordinate = y;
+	}
+	render() {
+		$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`).css("background-image", `url(${this.artwork})`);
+		// $(`#${this.id}`).css("background-image", `url(${this.artwork})`);
 	}
 	primaryAttack() {
 		if (this.weapon1.type === "Melee") {
@@ -68,20 +75,12 @@ class BasicUnit {
 	intMod() {
 		return Math.floor((this.int - 10)/2);
 	}
-	placeUnit(x, y) {
-		this.xCoordinate = x;
-		this.yCoordinate = y;
-	}
-	render() {
-		$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`).css("background-image", `url(${this.artwork})`);
-		// $(`#${this.id}`).css("background-image", `url(${this.artwork})`);
-	}
 };
 
 // Undead faction template.
 class Undead extends BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	plagued() {
 
@@ -90,8 +89,8 @@ class Undead extends BasicUnit {
 
 // Ausonia faction template.
 class Ausonia extends BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	holySymbol () {
 
@@ -100,8 +99,8 @@ class Ausonia extends BasicUnit {
 
 // Falkenrath faction template.
 class Falkenrath extends BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
 	primaryAttack() {
@@ -122,15 +121,18 @@ class Falkenrath extends BasicUnit {
 
 // Werewolf faction template.
 class Werewolf extends BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork, shapeShiftId) {
+		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+		this.shapeShiftId = shapeShiftId;
 	}
 	// Werewolves can temporarily shift from human to beast form once per game, buffing strength and hp while nerfing the rest.
 	shapeShift() {
-		this.hp = this.hp * 2;
-		this.ac = 10;
-		this.str = this.str * 2;
-		return `${this.name} has shifted shape into a werewolf!`;
+		console.log(`${this.name} is shifting shape into ${this.shapeShiftId.name}!`);
+
+		this.shapeShiftId.placeUnit(`${this.xCoordinate}`, `${this.yCoordinate}`);
+		this.shapeShiftId.render();
+
+		return "Transformation Complete";
 	}
 	// Werewolves' health regenerates over time and can only be cancelled out by silvered weapons.
 	regeneration() {
@@ -140,8 +142,8 @@ class Werewolf extends BasicUnit {
 
 // Demon faction template.
 class Demon extends BasicUnit {
-	constructor(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
-		super(id, name, gender, age, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
+	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork) {
+		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
 };
 
@@ -156,38 +158,40 @@ class Weapon {
 };
 
 
-// GLOBAL VARIABLES //
-
-
 // OBJECTS //
 // WEAPONS OBJECTS //
-const brassKnuckles = new Weapon("Brass Knuckles", "Melee", 5);
+// MELEE //
+const brassKnuckles = new Weapon("brassKnuckles", "Brass Knuckles", "Melee", 5);
 	brassKnuckles.damage = (min, max) => {
 		return Math.floor((Math.random() * (5 - 2)) + 2)
 	};
 
-const bite = new Weapon("Bite", "Melee", 5);
+const bite = new Weapon("bite","Bite", "Melee", 5);
 	bite.damage = (min, max) => {
+		return Math.floor((Math.random() * (9 - 6)) + 6)
+	};
+
+const claws = new Weapon("claws", "Claws", "Melee", 5);
+	claws.damage = (min, max) => {
 		return Math.floor((Math.random() * (9 - 6)) + 6)
 	};	
 
-const vorpalSword = new Weapon("Vorpal Sword", "Melee",  5);
+const vorpalSword = new Weapon("vorpalSword", "Vorpal Sword", "Melee",  5);
 	vorpalSword.damage = (min, max) => {
 		return Math.floor((Math.random() * (11 - 6)) + 6);
 	};
 
-const hawk40 = new Weapon("Hawk .40", "Ranged", 15);
+
+// RANGED //
+const hawk40 = new Weapon("hawk40", "Hawk .40", "Ranged", 15);
 	hawk40.damage = (min, max) => {
 		return Math.floor((Math.random() * (7 - 4) + 4));
 	}
 
-const falcon1837 = new Weapon("Falcon 1837", "Ranged", 45);
+const falcon1837 = new Weapon("falcon1837", "Falcon 1837", "Ranged", 45);
 	falcon1837.damage = (min, max) => {
 		return Math.floor((Math.random() * (17 - 4)) + 4);
 	};
-
-
-// PLAYERS //
 
 
 // FACTION UNITS //
@@ -206,46 +210,78 @@ const falcon1837 = new Weapon("Falcon 1837", "Ranged", 45);
 
 // FALKENRATH UNITS //
 // FALKENRATH HERO //
-const falkenrathHero = new Falkenrath("falkenrathHero", "Darian Falkenrath", "Male", "Unknown", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian_Falkenrath.png");
+const darianFalkenrath = new Falkenrath("darianFalkenrath", "Darian Falkenrath", "Male", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian_Falkenrath.png");
 
-// FALKENRATH AUXILLARY //
 // Falkenrath Enforcer
-const falkenrathEnforcer = new Falkenrath("falkenrathEnforcer", "Falkenrath Enforcer", "Male", 42, "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath_Enforcer.png");
+const falkenrathEnforcer = new Falkenrath("falkenrathEnforcer", "Falkenrath Enforcer", "Male", "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath_Enforcer.png");
 
 // Falkenrath Undertaker
-const falkenrathUndertaker = new Falkenrath("falkenrathUndertaker", "Falkenrath Undertaker", "Unknown", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath_Undertaker.png");
+const falkenrathUndertaker = new Falkenrath("falkenrathUndertaker", "Falkenrath Undertaker", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath_Undertaker.png");
 
-// FALKENRATH PRIMARY //
 // Falkenrath Marksman
-const falkenrathMarksman = new Falkenrath("falkenrathMarksman", "Falkenrath Marksman", "Female", 30, "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50, "images/unitTokens/Falkenrath_Marksman.png");
+const falkenrathMarksman = new Falkenrath("falkenrathMarksman", "Falkenrath Marksman", "Female", "Falkenrath", "Human", 22, 12, 16, 20, 8, 30, falcon1837, "", "", 50, "images/unitTokens/Falkenrath_Marksman.png");
 
 // Falkenrath Bailiff
-const falkenrathBailiff = new Falkenrath("falkenrathBailiff", "Falkenrath Bailiff", "Male", 37, "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50, "images/unitTokens/Falkenrath_Bailiff.png");
+const falkenrathBailiff = new Falkenrath("falkenrathBailiff", "Falkenrath Bailiff", "Male", "Falkenrath", "Human", 24, 14, 20, 16, 8, 30, vorpalSword, "", "", 50, "images/unitTokens/Falkenrath_Bailiff.png");
 
 // Falkenrath Hound
-const falkenrathHound = new BasicUnit("falkenrathHound", "Falkenrath Hound", "Male/Female", "Unknown", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Falkenrath_Hound.png");
+const falkenrathHound = new BasicUnit("falkenrathHound", "Falkenrath Hound", "Male/Female", "Falkenrath", "Hound", 16, 6, 12, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Falkenrath_Hound.png");
 
 
 // WEREWOLF UNITS //
 // WEREWOLF HERO //
-const werewolfHero = new Werewolf("werewolfHero", "Gideon Schrader", "Male", 54, "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon_Schrader.png");
+const gideonSchrader = new Werewolf("gideonSchrader", "Gideon Schrader", "Male", "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon_Schrader.png");
+const howlpackAlpha = new Werewolf("howlpackAlpha", "Howlpack Alpha", "Male", "Werewolf", "Werewolf", 120, 12, 92, 12, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB3.png");
+	howlpackAlpha.multiAttack = () => {
+		console.log(howlpackAlpha.secondaryAttack());
+		return howlpackAlpha.secondaryAttack();
+	};
+	gideonSchrader.shapeShiftId = howlpackAlpha;
+	howlpackAlpha.shapeShiftId = gideonSchrader;
 
-// WEREWOLF AUXILLARY //
 // Kruin Outlaw/Terror of Kruin's Pass
-const kruinOutlaw = new Werewolf("kruinOutlaw", "Kruin Outlaw", "Female", 18, "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png");
+const kruinOutlaw = new Werewolf("kruinOutlaw", "Kruin Outlaw", "Female", "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png",);
+const terrorOfKruinsPass = new Werewolf("terrorOfKruinsPass", "Terror of Kruin's Pass", "Female", "Werewolf", "Werewolf", 36, 14, 30, 12, 13, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB9.png");
+	terrorOfKruinsPass.multiAttack = () => {
+		console.log(terrorOfKruinsPass.secondaryAttack());
+		return terrorOfKruinsPass.secondaryAttack();
+	};
+	kruinOutlaw.shapeShiftId = terrorOfKruinsPass;
+	terrorOfKruinsPass.shapeShiftId = kruinOutlaw;
 
-// Ulvenwald Ranger/Ulvenwald Primordial
-const ulvenwaldRanger = new Werewolf("ulvenwaldRanger", "Ulvenwald Ranger", "Female", 60, "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75, "images/unitTokens/WerewolfF2.png");
+const ulvenwaldRangerUlvenwaldPrimordial = [
+ulvenwaldRanger = new Werewolf("ulvenwaldRanger", "Ulvenwald Ranger", "Female", "Werewolf", "Human", 20, 13, 16, 10, 18, 30, brassKnuckles, "", "", 75, "images/unitTokens/WerewolfF2.png"),
+ulvenwaldPrimordial = new Werewolf("ulvenwaldPrimordial", "Ulvenwald Primordial", "Female", "Werewolf", "Werewolf", 40, 10, 32, 10, 18, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB6.png"),
+	ulvenwaldPrimordial.multiAttack = () => {
+		console.log(ulvenwaldPrimordial.secondaryAttack());
+		return ulvenwaldPrimordial.secondaryAttack();
+	}];
+	ulvenwaldRanger.shapeShiftId = ulvenwaldPrimordial;
+	ulvenwaldPrimordial.shapeShiftId = ulvenwaldRanger;
+	
 
-// WEREWOLF PRIMARY //
 // Highland Trapper/Gametrail Ravager
-const highlandTrapper = new Werewolf("highlandTrapper", "Highland Trapper", "Male", 27, "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 50, "images/unitTokens/WerewolfM8.png");
+const highlandTrapper = new Werewolf("highlandTrapper", "Highland Trapper", "Male", "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 100, "images/unitTokens/WerewolfM8.png");
+const gametrailRavager = new Werewolf("gametrailRavager", "Gametrail Ravager", "Male", "Werewolf", "Werewolf", 46, 13, 36, 14, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB5.png");
+	gametrailRavager.multiAttack = () => {
+		console.log(gametrailRavager.secondaryAttack());
+		return gametrailRavager.secondaryAttack();
+	};
+	highlandTrapper.shapeShiftId = gametrailRavager;
+	gametrailRavager.shapeShiftId = highlandTrapper;
 
 // Village Pariah/Relentless Predator
-const villagePariah = new Werewolf("villagePariah", "Village Pariah", "Male", 26, "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
+const villagePariah = new Werewolf("villagePariah", "Village Pariah", "Male", "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
+const relentlessPredator = new Werewolf("relentlessPredator", "Relentless Predator", "Male", "Werewolf", "Werewolf", 36, 12, 28, 12, 10, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB8.png");
+	relentlessPredator.multiAttack = () => {
+		console.log(relentlessPredator.secondaryAttack());
+		return relentlessPredator.secondaryAttack();
+	};
+	villagePariah.shapeShiftId = relentlessPredator;
+	relentlessPredator.shapeShiftId = villagePariah;
 
 // Estwald Greatwolf
-const estwaldGreatwolf = new BasicUnit("estwaldGreatwolf", "Estwald Greatwolf", "Male/Female", "Unknown", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Wolf1.png")
+const estwaldGreatwolf = new BasicUnit("estwaldGreatwolf", "Estwald Greatwolf", "Male/Female", "Werewolf", "Wolf", 14, 8, 10, 10, 2, 40, bite, "", "", 25, "images/unitTokens/Wolf1.png");
 
 
 // DEMONS //
@@ -253,9 +289,9 @@ const estwaldGreatwolf = new BasicUnit("estwaldGreatwolf", "Estwald Greatwolf", 
 
 // GAMEPLAY //
 // PHASE ONE: TEAM CONSTRUCTION //
-const player1 = new Player("Falkenrath", 2, 300);
+const player1 = new Player("Falkenrath", 2);
 
-const player2 = new Player("Werewolves", 2, 300);
+const player2 = new Player("Werewolves", 2);
 
 
 	// Function that displays availale units for a specific faction and allows the player to buy them the appropriate cost.
@@ -268,7 +304,7 @@ const createFaction1 = (e) => {
 	}
 };
 	// When the function is called, the hero for the corresponding faction is pushed into the player's chosen units array.
-	player1.chosenUnits.push(falkenrathHero);
+	player1.chosenUnits.push(darianFalkenrath);
 
 	// This displays the current list of units that the player has bought, as well as their remaining budget.
 	$("body").append(`<div class="team-constructor"></div>`);
@@ -285,7 +321,7 @@ const refundUnits = () => {
 		player1.chosenUnits = [];
 		player1.unitBudget = 150;
 		$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
-		player1.chosenUnits.push(falkenrathHero);
+		player1.chosenUnits.push(darianFalkenrath);
 		renderUnitList();
 		refundUnits();
 		commitUnits();
@@ -309,10 +345,10 @@ commitUnits();
 
 	// The following are a set of "cards" that display each unit's informatin and a button allowing their purchase.
 	// FALKENRATH ENFORCER CARD //
-	$(".team-constructor").append(`<div id="enforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
-	$("#enforcer").append(`<img src="${falkenrathEnforcer.artwork}">`);
+	$(".team-constructor").append(`<div id="falkenrathEnforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
+	$("#falkenrathEnforcer").append(`<img src="${falkenrathEnforcer.artwork}">`);
 
-	$("#enforcer").on("click", () => {
+	$("#falkenrathEnforcer").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
@@ -329,29 +365,29 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#enforcer").append(`<li>Budget Cost: ${falkenrathEnforcer.budgetCost}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Budget Cost: ${falkenrathEnforcer.budgetCost}</li>`);
 
 	// Description
-	$("#enforcer").append(`<p>The ${falkenrathEnforcer.name} acts as the syndicate's loan shark, seeking out unpaid dues and putting hits on those who disobey Falkenrath law.</p>`);
+	$("#falkenrathEnforcer").append(`<p>The ${falkenrathEnforcer.name} acts as the syndicate's loan shark, seeking out unpaid dues and putting hits on those who disobey Falkenrath law.</p>`);
 
 	// Stats
-	$("#enforcer").append(`<p>Unit Stats:</p>`);
-	$("#enforcer").append(`<li>Hit Points: ${falkenrathEnforcer.hp}</li>`);
-	$("#enforcer").append(`<li>Armor Class: ${falkenrathEnforcer.ac}</li>`);
-	$("#enforcer").append(`<li>Strength: ${falkenrathEnforcer.str}</li>`);
-	$("#enforcer").append(`<li>Dexterity: ${falkenrathEnforcer.dex}</li>`);
-	$("#enforcer").append(`<li>Intelligence: ${falkenrathEnforcer.int}</li>`);
-	$("#enforcer").append(`<li>Speed: ${falkenrathEnforcer.speed}</li>`);
+	$("#falkenrathEnforcer").append(`<p>Unit Stats:</p>`);
+	$("#falkenrathEnforcer").append(`<li>Hit Points: ${falkenrathEnforcer.hp}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Armor Class: ${falkenrathEnforcer.ac}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Strength: ${falkenrathEnforcer.str}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Dexterity: ${falkenrathEnforcer.dex}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Intelligence: ${falkenrathEnforcer.int}</li>`);
+	$("#falkenrathEnforcer").append(`<li>Speed: ${falkenrathEnforcer.speed}</li>`);
 
 	// Inventory
-	$("#enforcer").append(`<p>Inventory:</p>`);
-	$("#enforcer").append(`<li>Primary Weapon: ${falkenrathEnforcer.weapon1.name}</li><br>`);
+	$("#falkenrathEnforcer").append(`<p>Inventory:</p>`);
+	$("#falkenrathEnforcer").append(`<li>Primary Weapon: ${falkenrathEnforcer.weapon1.name}</li><br>`);
 
 
 	// FALKENRATH UNDERTAKER CARD //
-	$(".team-constructor").append(`<br><div id="undertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
-	$("#undertaker").append(`<img src="${falkenrathUndertaker.artwork}">`);
-	$("#undertaker").on("click", () => {
+	$(".team-constructor").append(`<br><div id="falkenrathUndertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
+	$("#falkenrathUndertaker").append(`<img src="${falkenrathUndertaker.artwork}">`);
+	$("#falkenrathUndertaker").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
@@ -368,29 +404,29 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#undertaker").append(`<li>Budget Cost: ${falkenrathUndertaker.budgetCost}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Budget Cost: ${falkenrathUndertaker.budgetCost}</li>`);
 
 	// Description
-	$("#undertaker").append(`<p>The ${falkenrathUndertaker.name} are mysterious entities working for the Falkenrath. No one knows where they come from, or what they look like under their disturbing masks.</p>`);
+	$("#falkenrathUndertaker").append(`<p>The ${falkenrathUndertaker.name} are mysterious entities working for the Falkenrath. No one knows where they come from, or what they look like under their disturbing masks.</p>`);
 
 	// Stats
-	$("#undertaker").append(`<p>Unit Stats:</p>`);
-	$("#undertaker").append(`<li>Hit Points: ${falkenrathUndertaker.hp}</li>`);
-	$("#undertaker").append(`<li>Armor Class: ${falkenrathUndertaker.ac}</li>`);
-	$("#undertaker").append(`<li>Strength: ${falkenrathUndertaker.str}</li>`);
-	$("#undertaker").append(`<li>Dexterity: ${falkenrathUndertaker.dex}</li>`);
-	$("#undertaker").append(`<li>Intelligence: ${falkenrathUndertaker.int}</li>`);
-	$("#undertaker").append(`<li>Speed: ${falkenrathUndertaker.speed}</li>`);
+	$("#falkenrathUndertaker").append(`<p>Unit Stats:</p>`);
+	$("#falkenrathUndertaker").append(`<li>Hit Points: ${falkenrathUndertaker.hp}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Armor Class: ${falkenrathUndertaker.ac}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Strength: ${falkenrathUndertaker.str}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Dexterity: ${falkenrathUndertaker.dex}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Intelligence: ${falkenrathUndertaker.int}</li>`);
+	$("#falkenrathUndertaker").append(`<li>Speed: ${falkenrathUndertaker.speed}</li>`);
 
 	// Inventory
-	$("#undertaker").append(`<p>Inventory:</p>`);
-	$("#undertaker").append(`<li>Primary Weapon: ${falkenrathUndertaker.weapon1.name}</li><br>`);
+	$("#falkenrathUndertaker").append(`<p>Inventory:</p>`);
+	$("#falkenrathUndertaker").append(`<li>Primary Weapon: ${falkenrathUndertaker.weapon1.name}</li><br>`);
 
 
 	// FALKENRATH MARKSMAN CARD //
-	$(".team-constructor").append(`<br><div id="marksman"><h3>${falkenrathMarksman.name}</h3></div>`);
-	$("#marksman").append(`<img src="${falkenrathMarksman.artwork}">`);
-	$("#marksman").on("click", () => {
+	$(".team-constructor").append(`<br><div id="falkenrathMarksman"><h3>${falkenrathMarksman.name}</h3></div>`);
+	$("#falkenrathMarksman").append(`<img src="${falkenrathMarksman.artwork}">`);
+	$("#falkenrathMarksman").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
@@ -407,29 +443,29 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#marksman").append(`<li>Budget Cost: ${falkenrathMarksman.budgetCost}</li>`);
+	$("#falkenrathMarksman").append(`<li>Budget Cost: ${falkenrathMarksman.budgetCost}</li>`);
 
 	// Description
-	$("#marksman").append(`<p>The ${falkenrathMarksman.name} is a role specifically reserved for female members of the Falkenrath Police. Their slight bodies allow them greater maneuverability, making excellent long range assailants.</p>`);
+	$("#falkenrathMarksman").append(`<p>The ${falkenrathMarksman.name} is a role specifically reserved for female members of the Falkenrath Police. Their slight bodies allow them greater maneuverability, making excellent long range assailants.</p>`);
 
 	// Stats
-	$("#marksman").append(`<p>Unit Stats:</p>`);
-	$("#marksman").append(`<li>Hit Points: ${falkenrathMarksman.hp}</li>`);
-	$("#marksman").append(`<li>Armor Class: ${falkenrathMarksman.ac}</li>`);
-	$("#marksman").append(`<li>Strength: ${falkenrathMarksman.str}</li>`);
-	$("#marksman").append(`<li>Dexterity: ${falkenrathMarksman.dex}</li>`);
-	$("#marksman").append(`<li>Intelligence: ${falkenrathMarksman.int}</li>`);
-	$("#marksman").append(`<li>Speed: ${falkenrathMarksman.speed}</li>`);
+	$("#falkenrathMarksman").append(`<p>Unit Stats:</p>`);
+	$("#falkenrathMarksman").append(`<li>Hit Points: ${falkenrathMarksman.hp}</li>`);
+	$("#falkenrathMarksman").append(`<li>Armor Class: ${falkenrathMarksman.ac}</li>`);
+	$("#falkenrathMarksman").append(`<li>Strength: ${falkenrathMarksman.str}</li>`);
+	$("#falkenrathMarksman").append(`<li>Dexterity: ${falkenrathMarksman.dex}</li>`);
+	$("#falkenrathMarksman").append(`<li>Intelligence: ${falkenrathMarksman.int}</li>`);
+	$("#falkenrathMarksman").append(`<li>Speed: ${falkenrathMarksman.speed}</li>`);
 
 	// Inventory
-	$("#marksman").append(`<p>Inventory:</p>`);
-	$("#marksman").append(`<li>Primary Weapon: ${falkenrathMarksman.weapon1.name}</li><br>`);
+	$("#falkenrathMarksman").append(`<p>Inventory:</p>`);
+	$("#falkenrathMarksman").append(`<li>Primary Weapon: ${falkenrathMarksman.weapon1.name}</li><br>`);
 
 
 	// FALKENRATH BAILIFF CARD //
-	$(".team-constructor").append(`<br><div id="bailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
-	$("#bailiff").append(`<img src="${falkenrathBailiff.artwork}">`);
-		$("#bailiff").on("click", () => {
+	$(".team-constructor").append(`<br><div id="falkenrathBailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
+	$("#falkenrathBailiff").append(`<img src="${falkenrathBailiff.artwork}">`);
+		$("#falkenrathBailiff").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
@@ -446,29 +482,29 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#bailiff").append(`<li>Budget Cost: ${falkenrathBailiff.budgetCost}</li>`);
+	$("#falkenrathBailiff").append(`<li>Budget Cost: ${falkenrathBailiff.budgetCost}</li>`);
 
 	// Description
-	$("#bailiff").append(`<p>The ${falkenrathBailiff.name}. These are the bulk of the Falkenrath Police. They are the iconic stone cold faces that instill fear and submissiveness into the subjects of the Falkenrath Syndicate.</p>`);
+	$("#falkenrathBailiff").append(`<p>The ${falkenrathBailiff.name}. These are the bulk of the Falkenrath Police. They are the iconic stone cold faces that instill fear and submissiveness into the subjects of the Falkenrath Syndicate.</p>`);
 
 	// Stats
-	$("#bailiff").append(`<p>Unit Stats:</p>`);
-	$("#bailiff").append(`<li>Hit Points: ${falkenrathBailiff.hp}</li>`);
-	$("#bailiff").append(`<li>Armor Class: ${falkenrathBailiff.ac}</li>`);
-	$("#bailiff").append(`<li>Strength: ${falkenrathBailiff.str}</li>`);
-	$("#bailiff").append(`<li>Dexterity: ${falkenrathBailiff.dex}</li>`);
-	$("#bailiff").append(`<li>Intelligence: ${falkenrathBailiff.int}</li>`);
-	$("#bailiff").append(`<li>Speed: ${falkenrathBailiff.speed}</li>`);
+	$("#falkenrathBailiff").append(`<p>Unit Stats:</p>`);
+	$("#falkenrathBailiff").append(`<li>Hit Points: ${falkenrathBailiff.hp}</li>`);
+	$("#falkenrathBailiff").append(`<li>Armor Class: ${falkenrathBailiff.ac}</li>`);
+	$("#falkenrathBailiff").append(`<li>Strength: ${falkenrathBailiff.str}</li>`);
+	$("#falkenrathBailiff").append(`<li>Dexterity: ${falkenrathBailiff.dex}</li>`);
+	$("#falkenrathBailiff").append(`<li>Intelligence: ${falkenrathBailiff.int}</li>`);
+	$("#falkenrathBailiff").append(`<li>Speed: ${falkenrathBailiff.speed}</li>`);
 
 	// Inventory
-	$("#bailiff").append(`<p>Inventory:</p>`);
-	$("#bailiff").append(`<li>Primary Weapon: ${falkenrathBailiff.weapon1.name}</li><br>`);
+	$("#falkenrathBailiff").append(`<p>Inventory:</p>`);
+	$("#falkenrathBailiff").append(`<li>Primary Weapon: ${falkenrathBailiff.weapon1.name}</li><br>`);
 
 
 	// FALKENRATH HOUND CARD //
-	$(".team-constructor").append(`<br><div id="hound"><h3>${falkenrathHound.name}<h3></div>`);
-	$("#hound").append(`<img src="${falkenrathHound.artwork}">`);
-			$("#hound").on("click", () => {
+	$(".team-constructor").append(`<br><div id="falkenrathHound"><h3>${falkenrathHound.name}<h3></div>`);
+	$("#falkenrathHound").append(`<img src="${falkenrathHound.artwork}">`);
+			$("#falkenrathHound").on("click", () => {
 		if (player1.unitBudget === 0) {
 			$("#unit-budget").text(`Reamining Unit Budget: ${player1.unitBudget}`);
 			renderUnitList();
@@ -485,23 +521,23 @@ commitUnits();
 	});
 
 	// Budget Cost
-	$("#hound").append(`<li>Budget Cost: ${falkenrathHound.budgetCost}</li>`);
+	$("#falkenrathHound").append(`<li>Budget Cost: ${falkenrathHound.budgetCost}</li>`);
 
 	// Description
-	$("#hound").append(`<p>The ${falkenrathHound.name}s are Gentled German Shepherds. Already being dogs bred for police work, these beasts are truly terrifying to be on the receiving end of their aggression.</p>`);
+	$("#falkenrathHound").append(`<p>The ${falkenrathHound.name}s are Gentled German Shepherds. Already being dogs bred for police work, these beasts are truly terrifying to be on the receiving end of their aggression.</p>`);
 
 	// Stats
-	$("#hound").append(`<p>Unit Stats:</p>`);
-	$("#hound").append(`<li>Hit Points: ${falkenrathHound.hp}</li>`);
-	$("#hound").append(`<li>Armor Class: ${falkenrathHound.ac}</li>`);
-	$("#hound").append(`<li>Strength: ${falkenrathHound.str}</li>`);
-	$("#hound").append(`<li>Dexterity: ${falkenrathHound.dex}</li>`);
-	$("#hound").append(`<li>Intelligence: ${falkenrathHound.int}</li>`);
-	$("#hound").append(`<li>Speed: ${falkenrathHound.speed}</li>`);
+	$("#falkenrathHound").append(`<p>Unit Stats:</p>`);
+	$("#falkenrathHound").append(`<li>Hit Points: ${falkenrathHound.hp}</li>`);
+	$("#falkenrathHound").append(`<li>Armor Class: ${falkenrathHound.ac}</li>`);
+	$("#falkenrathHound").append(`<li>Strength: ${falkenrathHound.str}</li>`);
+	$("#falkenrathHound").append(`<li>Dexterity: ${falkenrathHound.dex}</li>`);
+	$("#falkenrathHound").append(`<li>Intelligence: ${falkenrathHound.int}</li>`);
+	$("#falkenrathHound").append(`<li>Speed: ${falkenrathHound.speed}</li>`);
 
 	// Inventory
-	$("#hound").append(`<p>Inventory:</p>`);
-	$("#hound").append(`<li>Primary Weapon: ${falkenrathHound.weapon1.name}</li><br>`);
+	$("#falkenrathHound").append(`<p>Inventory:</p>`);
+	$("#falkenrathHound").append(`<li>Primary Weapon: ${falkenrathHound.weapon1.name}</li><br>`);
 
 };
 
@@ -517,7 +553,7 @@ const createFaction2 = (e) => {
 	}
 };
 		// When the function is called, the hero for the corresponding faction is pushed into the player's chosen units array.
-	player2.chosenUnits.push(werewolfHero);
+	player2.chosenUnits.push(gideonSchrader);
 
 	// This displays the current list of units that the player has bought, as well as their remaining budget.
 	$("body").append(`<div class="team-constructor"></div>`);
@@ -528,13 +564,13 @@ const createFaction2 = (e) => {
 
 		
 	// This is a button that will clear the built unit list and completely clear it while refunding all budget points.
-const refundUnits = () => {
+	const refundUnits = () => {
 	$("#unit-budget").append(`<button id="refund-units">Refund Units</button>`);
 	$("#refund-units").on("click", () => {
 		player2.chosenUnits = [];
 		player2.unitBudget = 150;
 		$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
-		player2.chosenUnits.push(werewolfHero);
+		player2.chosenUnits.push(gideonSchrader);
 		renderUnitList();
 		refundUnits();
 		commitUnits();
@@ -557,6 +593,45 @@ commitUnits();
 
 	
 	// WEREWOLF FACTION CARDS //
+	// HIGHLAND TRAPPER CARD //
+	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
+	$("#highlandTrapper").append(`<img src="${highlandTrapper.artwork}">`);
+			$("#highlandTrapper").on("click", () => {
+		if (player2.unitBudget === 0) {
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		} else {
+			player2.chosenUnits.push(highlandTrapper);
+			player2.unitBudget -= highlandTrapper.budgetCost;
+			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
+			renderUnitList();
+			refundUnits();
+			commitUnits();
+		}
+	});
+
+	// Budget Cost
+	$("#highlandTrapper").append(`<li>Budget Cost: ${highlandTrapper.budgetCost}</li>`);
+
+	// Description
+	$("#highlandTrapper").append(`<p>The ${highlandTrapper.name} is a seasoned tracker and hunter, native to the foothills of Kruin's Pass.</p>`);
+
+	// Stats
+	$("#highlandTrapper").append(`<p>Unit Stats:</p>`);
+	$("#highlandTrapper").append(`<li>Hit Points: ${highlandTrapper.hp}</li>`);
+	$("#highlandTrapper").append(`<li>Armor Class: ${highlandTrapper.ac}</li>`);
+	$("#highlandTrapper").append(`<li>Strength: ${highlandTrapper.str}</li>`);
+	$("#highlandTrapper").append(`<li>Dexterity: ${highlandTrapper.dex}</li>`);
+	$("#highlandTrapper").append(`<li>Intelligence: ${highlandTrapper.int}</li>`);
+	$("#highlandTrapper").append(`<li>Speed: ${highlandTrapper.speed}</li>`);
+
+	// Inventory
+	$("#highlandTrapper").append(`<p>Inventory:</p>`);
+	$("#highlandTrapper").append(`<li>Primary Weapon: ${highlandTrapper.weapon1.name}</li><br>`);
+
+
 	// KRUIN OUTLAW CARD //
 	$(".team-constructor").append(`<div id="kruinOutlaw"><h3>${kruinOutlaw.name}</h3><div>`);
 	$("#kruinOutlaw").append(`<img src="${kruinOutlaw.artwork}">`);
@@ -633,45 +708,6 @@ commitUnits();
 	// Inventory
 	$("#ulvenwaldRanger").append(`<p>Inventory:</p>`);
 	$("#ulvenwaldRanger").append(`<li>Primary Weapon: ${ulvenwaldRanger.weapon1.name}</li><br>`);
-
-
-	// HIGHLAND TRAPPER CARD //
-	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
-	$("#highlandTrapper").append(`<img src="${highlandTrapper.artwork}">`);
-			$("#highlandTrapper").on("click", () => {
-		if (player2.unitBudget === 0) {
-			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
-			renderUnitList();
-			refundUnits();
-			commitUnits();
-		} else {
-			player2.chosenUnits.push(highlandTrapper);
-			player2.unitBudget -= highlandTrapper.budgetCost;
-			$("#unit-budget").text(`Reamining Unit Budget: ${player2.unitBudget}`);
-			renderUnitList();
-			refundUnits();
-			commitUnits();
-		}
-	});
-
-	// Budget Cost
-	$("#highlandTrapper").append(`<li>Budget Cost: ${highlandTrapper.budgetCost}</li>`);
-
-	// Description
-	$("#highlandTrapper").append(`<p>The ${highlandTrapper.name} is a seasoned tracker and hunter, native to the foothills of Kruin's Pass.</p>`);
-
-	// Stats
-	$("#highlandTrapper").append(`<p>Unit Stats:</p>`);
-	$("#highlandTrapper").append(`<li>Hit Points: ${highlandTrapper.hp}</li>`);
-	$("#highlandTrapper").append(`<li>Armor Class: ${highlandTrapper.ac}</li>`);
-	$("#highlandTrapper").append(`<li>Strength: ${highlandTrapper.str}</li>`);
-	$("#highlandTrapper").append(`<li>Dexterity: ${highlandTrapper.dex}</li>`);
-	$("#highlandTrapper").append(`<li>Intelligence: ${highlandTrapper.int}</li>`);
-	$("#highlandTrapper").append(`<li>Speed: ${highlandTrapper.speed}</li>`);
-
-	// Inventory
-	$("#highlandTrapper").append(`<p>Inventory:</p>`);
-	$("#highlandTrapper").append(`<li>Primary Weapon: ${highlandTrapper.weapon1.name}</li><br>`);
 
 
 	// VILLAGE PARIAH CARD //
