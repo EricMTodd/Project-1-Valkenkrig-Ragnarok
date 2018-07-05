@@ -3,7 +3,6 @@ console.log("JavaScript is running...");
 
 // DEVELOPER NOTES //
 // Create a game object that contains the gameboard, pseudo-clock, and turn tracker.
-// Create a function that spawns units from the corner out.
 // Create remaining factions and units.
 // Add art and styling to game.
 // Add factions units into an array, then create a loop to print stats on unit cards.
@@ -50,7 +49,40 @@ class BasicUnit {
 	}
 	render() {
 		$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`).css("background-image", `url(${this.artwork})`);
-		// $(`#${this.id}`).css("background-image", `url(${this.artwork})`);
+	}
+	moveUp() {
+		if (this.yCoordinate < 15) {
+			console.log("Room to move up.");
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+			this.yCoordinate += 1;
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
+			this.render();
+		}
+	}
+	moveRight() {
+		if (this.xCoordinate < 15) {
+			console.log("Room to move right.");
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+			this.xCoordinate += 1;
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
+			this.render();
+		}
+	}
+	moveDown() {
+			console.log("Room to move down.");
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+			this.yCoordinate -= 1;
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
+			this.render();
+	}
+	moveLeft() {
+		if (this.xCoordinate > 0) {
+			console.log("Room to move left.");
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+			this.xCoordinate -= 1;
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
+			this.render();
+		}
 	}
 	primaryAttack() {
 		if (this.weapon1.type === "Melee") {
