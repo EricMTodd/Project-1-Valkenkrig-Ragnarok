@@ -52,7 +52,6 @@ class BasicUnit {
 	}
 	moveUp() {
 		if (this.yCoordinate < 15) {
-			console.log("Room to move up.");
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 			this.yCoordinate += 1;
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
@@ -61,7 +60,6 @@ class BasicUnit {
 	}
 	moveRight() {
 		if (this.xCoordinate < 15) {
-			console.log("Room to move right.");
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 			this.xCoordinate += 1;
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
@@ -69,15 +67,15 @@ class BasicUnit {
 		}
 	}
 	moveDown() {
-			console.log("Room to move down.");
+		if (this.yCoordinate > 0) {
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 			this.yCoordinate -= 1;
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
 			this.render();
+		}
 	}
 	moveLeft() {
 		if (this.xCoordinate > 0) {
-			console.log("Room to move left.");
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 			this.xCoordinate -= 1;
 			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
@@ -262,22 +260,24 @@ const falkenrathHound = new BasicUnit("falkenrathHound", "Falkenrath Hound", "Ma
 
 // WEREWOLF UNITS //
 // WEREWOLF HERO //
-const gideonSchrader = new Werewolf("gideonSchrader", "Gideon Schrader", "Male", "Werewolf", "Human", 60, 18, 46, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon_Schrader.png");
-const howlpackAlpha = new Werewolf("howlpackAlpha", "Howlpack Alpha", "Male", "Werewolf", "Werewolf", 120, 12, 92, 12, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB3.png");
+const gideonSchraderHowlpackAlpha = [
+gideonSchrader = new Werewolf("gideonSchrader", "Gideon Schrader", "Male", "Werewolf", "Human", 60, 18, 23, 16, 12, 30, brassKnuckles, "", "", 0, "images/unitTokens/Gideon_Schrader.png"),
+howlpackAlpha = new Werewolf("howlpackAlpha", "Howlpack Alpha", "Male", "Werewolf", "Werewolf", 120, 12, 46, 12, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB3.png"),
 	howlpackAlpha.multiAttack = () => {
 		console.log(howlpackAlpha.secondaryAttack());
 		return howlpackAlpha.secondaryAttack();
-	};
+	}];
 	gideonSchrader.shapeShiftId = howlpackAlpha;
 	howlpackAlpha.shapeShiftId = gideonSchrader;
 
 // Kruin Outlaw/Terror of Kruin's Pass
-const kruinOutlaw = new Werewolf("kruinOutlaw", "Kruin Outlaw", "Female", "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png",);
-const terrorOfKruinsPass = new Werewolf("terrorOfKruinsPass", "Terror of Kruin's Pass", "Female", "Werewolf", "Werewolf", 36, 14, 30, 12, 13, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB9.png");
+const kruinOutlawTerrorOfKruinsPass = [
+kruinOutlaw = new Werewolf("kruinOutlaw", "Kruin Outlaw", "Female", "Werewolf", "Human", 18, 21, 15, 24, 13, 30, vorpalSword, "", "", 75, "images/unitTokens/WerewolfF3.png",),
+terrorOfKruinsPass = new Werewolf("terrorOfKruinsPass", "Terror of Kruin's Pass", "Female", "Werewolf", "Werewolf", 36, 14, 30, 12, 13, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB9.png"),
 	terrorOfKruinsPass.multiAttack = () => {
 		console.log(terrorOfKruinsPass.secondaryAttack());
 		return terrorOfKruinsPass.secondaryAttack();
-	};
+	}];
 	kruinOutlaw.shapeShiftId = terrorOfKruinsPass;
 	terrorOfKruinsPass.shapeShiftId = kruinOutlaw;
 
@@ -293,22 +293,24 @@ ulvenwaldPrimordial = new Werewolf("ulvenwaldPrimordial", "Ulvenwald Primordial"
 	
 
 // Highland Trapper/Gametrail Ravager
-const highlandTrapper = new Werewolf("highlandTrapper", "Highland Trapper", "Male", "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 100, "images/unitTokens/WerewolfM8.png");
-const gametrailRavager = new Werewolf("gametrailRavager", "Gametrail Ravager", "Male", "Werewolf", "Werewolf", 46, 13, 36, 14, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB5.png");
+const highlandTrapperGametrailRavager = [
+highlandTrapper = new Werewolf("highlandTrapper", "Highland Trapper", "Male", "Werewolf", "Human", 23, 13, 18, 16, 12, 30, falcon1837, "", 20, 100, "images/unitTokens/WerewolfM8.png"),
+gametrailRavager = new Werewolf("gametrailRavager", "Gametrail Ravager", "Male", "Werewolf", "Werewolf", 46, 13, 36, 14, 12, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB5.png"),
 	gametrailRavager.multiAttack = () => {
 		console.log(gametrailRavager.secondaryAttack());
 		return gametrailRavager.secondaryAttack();
-	};
+	}];
 	highlandTrapper.shapeShiftId = gametrailRavager;
 	gametrailRavager.shapeShiftId = highlandTrapper;
 
 // Village Pariah/Relentless Predator
-const villagePariah = new Werewolf("villagePariah", "Village Pariah", "Male", "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png");
-const relentlessPredator = new Werewolf("relentlessPredator", "Relentless Predator", "Male", "Werewolf", "Werewolf", 36, 12, 28, 12, 10, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB8.png");
+const villagePariahRelentlessPredator = [
+villagePariah = new Werewolf("villagePariah", "Village Pariah", "Male", "Werewolf", "Human", 18, 12, 14, 12, 10, 30, brassKnuckles, "", "", 50, "images/unitTokens/WerewolfM3.png"),
+relentlessPredator = new Werewolf("relentlessPredator", "Relentless Predator", "Male", "Werewolf", "Werewolf", 36, 12, 28, 12, 10, 60, bite, claws, "", 0, "images/unitTokens/WerewolfB8.png"),
 	relentlessPredator.multiAttack = () => {
 		console.log(relentlessPredator.secondaryAttack());
 		return relentlessPredator.secondaryAttack();
-	};
+	}];
 	villagePariah.shapeShiftId = relentlessPredator;
 	relentlessPredator.shapeShiftId = villagePariah;
 
