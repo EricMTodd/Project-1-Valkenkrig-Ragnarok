@@ -44,6 +44,12 @@ class BasicUnit {
 		this.budgetCost = budgetCost;
 		this.artwork = artwork;
 	}
+	resetSpeed() {
+		this.speed = this.defaultSpeed;
+		console.log(`${this.name} defaultSpeed is ${this.defaultSpeed}`);
+		console.log(`${this.name} speed is now ${this.speed}`);
+		return `${this.defaultSpeed}`
+	}
 	reduceActionPoint() {
 		if (this.faction === "Falkenrath") {
 			player1.actionPoints -= 1;
@@ -85,13 +91,16 @@ class BasicUnit {
 			 this.reduceActionPoint();
 		} else {
 			if (this.yCoordinate < 15) {
-				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id", `${this.id}`);
 				this.yCoordinate += 1;
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
-				this.render();
+			for (i = 0; i < game.activePlayer.chosenUnits.length; i++) {
+			let unit = game.activePlayer.chosenUnits[i];
+				unit.render();
 			}
 		}
 	}
+}
 	moveRight() {
 		this.speed -= 5;
 		let maxSpeed = this.speed/5;
@@ -100,13 +109,16 @@ class BasicUnit {
 			 this.reduceActionPoint();
 		} else {
 			if (this.xCoordinate < 15) {
-				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
+				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id", `${this.id}`);
 				this.xCoordinate += 1;
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
-				this.render();
+			for (i = 0; i < game.activePlayer.chosenUnits.length; i++) {
+			let unit = game.activePlayer.chosenUnits[i];
+				unit.render();
 			}
 		}
 	}
+}
 	moveDown() {
 		this.speed -= 5;
 		let maxSpeed = this.speed/5;
@@ -118,10 +130,13 @@ class BasicUnit {
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 				this.yCoordinate -= 1;
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
-				this.render();
+			for (i = 0; i < game.activePlayer.chosenUnits.length; i++) {
+			let unit = game.activePlayer.chosenUnits[i];
+				unit.render();
 			}
 		}
 	}
+}
 	moveLeft() {
 		this.speed -= 5;
 		let maxSpeed = this.speed/5;
@@ -133,10 +148,13 @@ class BasicUnit {
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).css("background-image", "").removeAttr("id");
 				this.xCoordinate -= 1;
 				$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).attr("id", `${this.id}`);
-				this.render();
+			for (i = 0; i < game.activePlayer.chosenUnits.length; i++) {
+			let unit = game.activePlayer.chosenUnits[i];
+				unit.render();
 			}
 		}
 	}
+}	
 	deterimineHit() {
 		if (this.weapon1.type === "Melee") {
 			if (roll20() + this.strMod() > game.targetedUnit.ac) {
@@ -206,38 +224,6 @@ class Ausonia extends BasicUnit {
 class Falkenrath extends BasicUnit {
 	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, defaultSpeed, weapon1, weapon2, utility, budgetCost, artwork) {
 		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, defaultSpeed, weapon1, weapon2, utility, budgetCost, artwork);
-	}
-	deterimineHit() {
-	if (this.weapon1.type === "Melee") {
-		if (roll20() + this.strMod() > game.targetedUnit.ac) {
-			this.primaryAttack();
-			return "Hit!";
-		} else {
-			return "Miss!";
-		}
-	} else if (this.weapon1.type === "Ranged") {
-		if (roll20() + this.dexMod() > game.targetedUnit.ac) {
-			this.primaryAttack();
-			return "Hit!";
-		} else {
-			return "Miss!";
-		}
-	}
-}
-	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
-	primaryAttack() {
-		if (this.str > this.dex) {
-			return this.weapon1.damage() + this.strMod();
-		} else {
-			return this.weapon1.damage() + this.dexMod();
-		}
-	}
-	secondaryAttack() {
-		if (this.str > this.dex) {
-			return this.weapon2.damage() + this.strMod();
-		} else {
-			return this.weapon2.damage() + this.dexMod();
-		}
 	}
 };
 
@@ -479,7 +465,7 @@ commitUnits();
 
 	// The following are a set of "cards" that display each unit's informatin and a button allowing their purchase.
 	// FALKENRATH ENFORCER CARD //
-	$(".team-constructor").append(`<div id="falkenrathEnforcer"><h3>${falkenrathEnforcer.name}</h3></div>`);
+	$(".team-constructor").append(`<div id="falkenrathEnforcer"><h1>${falkenrathEnforcer.name}</h1></div>`);
 	$("#falkenrathEnforcer").append(`<img src="${falkenrathEnforcer.artwork}">`);
 
 	$("#falkenrathEnforcer").on("click", () => {
@@ -520,7 +506,7 @@ commitUnits();
 
 
 	// FALKENRATH UNDERTAKER CARD //
-	$(".team-constructor").append(`<br><div id="falkenrathUndertaker"><h3>${falkenrathUndertaker.name}</h3></div>`);
+	$(".team-constructor").append(`<br><div id="falkenrathUndertaker"><h1>${falkenrathUndertaker.name}</h1></div>`);
 	$("#falkenrathUndertaker").append(`<img src="${falkenrathUndertaker.artwork}">`);
 	$("#falkenrathUndertaker").on("click", () => {
 		if (player1.unitBudget === 0) {
@@ -560,7 +546,7 @@ commitUnits();
 
 
 	// FALKENRATH MARKSMAN CARD //
-	$(".team-constructor").append(`<br><div id="falkenrathMarksman"><h3>${falkenrathMarksman.name}</h3></div>`);
+	$(".team-constructor").append(`<br><div id="falkenrathMarksman"><h1>${falkenrathMarksman.name}</h1></div>`);
 	$("#falkenrathMarksman").append(`<img src="${falkenrathMarksman.artwork}">`);
 	$("#falkenrathMarksman").on("click", () => {
 		if (player1.unitBudget === 0) {
@@ -600,7 +586,7 @@ commitUnits();
 
 
 	// FALKENRATH BAILIFF CARD //
-	$(".team-constructor").append(`<br><div id="falkenrathBailiff"><h3>${falkenrathBailiff.name}</h3></div>`);
+	$(".team-constructor").append(`<br><div id="falkenrathBailiff"><h1>${falkenrathBailiff.name}</h1></div>`);
 	$("#falkenrathBailiff").append(`<img src="${falkenrathBailiff.artwork}">`);
 		$("#falkenrathBailiff").on("click", () => {
 		if (player1.unitBudget === 0) {
@@ -640,7 +626,7 @@ commitUnits();
 
 
 	// FALKENRATH HOUND CARD //
-	$(".team-constructor").append(`<br><div id="falkenrathHound"><h3>${falkenrathHound.name}<h3></div>`);
+	$(".team-constructor").append(`<br><div id="falkenrathHound"><h1>${falkenrathHound.name}<h1></div>`);
 	$("#falkenrathHound").append(`<img src="${falkenrathHound.artwork}">`);
 			$("#falkenrathHound").on("click", () => {
 		if (player1.unitBudget === 0) {
@@ -733,7 +719,7 @@ commitUnits();
 	
 	// WEREWOLF FACTION CARDS //
 	// HIGHLAND TRAPPER CARD //
-	$(".team-constructor").append(`<div id="highlandTrapper"><h3>${highlandTrapper.name}</h3><div>`);
+	$(".team-constructor").append(`<div id="highlandTrapper"><h1>${highlandTrapper.name}</h1><div>`);
 	$("#highlandTrapper").append(`<img src="${highlandTrapper.artwork}">`);
 			$("#highlandTrapper").on("click", () => {
 		if (player2.unitBudget === 0) {
@@ -773,7 +759,7 @@ commitUnits();
 
 
 	// KRUIN OUTLAW CARD //
-	$(".team-constructor").append(`<div id="kruinOutlaw"><h3>${kruinOutlaw.name}</h3><div>`);
+	$(".team-constructor").append(`<div id="kruinOutlaw"><h1>${kruinOutlaw.name}</h1><div>`);
 	$("#kruinOutlaw").append(`<img src="${kruinOutlaw.artwork}">`);
 		$("#kruinOutlaw").on("click", () => {
 		if (player2.unitBudget === 0) {
@@ -813,7 +799,7 @@ commitUnits();
 
 
 	// ULVENWALD RANGER CARD //
-	$(".team-constructor").append(`<div id="ulvenwaldRanger"><h3>${ulvenwaldRanger.name}</h3><div>`);
+	$(".team-constructor").append(`<div id="ulvenwaldRanger"><h1>${ulvenwaldRanger.name}</h1><div>`);
 	$("#ulvenwaldRanger").append(`<img src="${ulvenwaldRanger.artwork}">`);
 			$("#ulvenwaldRanger").on("click", () => {
 		if (player2.unitBudget === 0) {
@@ -853,7 +839,7 @@ commitUnits();
 
 
 	// VILLAGE PARIAH CARD //
-	$(".team-constructor").append(`<div id="villagePariah"><h3>${villagePariah.name}</h3><div>`);
+	$(".team-constructor").append(`<div id="villagePariah"><h1>${villagePariah.name}</h1><div>`);
 	$("#villagePariah").append(`<img src="${villagePariah.artwork}">`);
 			$("#villagePariah").on("click", () => {
 		if (player2.unitBudget === 0) {
@@ -893,7 +879,7 @@ commitUnits();
 
 
 	// ESTWALD GREATWOLF CARD //
-	$(".team-constructor").append(`<div id="estwaldGreatwolf"><h3>${estwaldGreatwolf.name}<h3><div>`);
+	$(".team-constructor").append(`<div id="estwaldGreatwolf"><h1>${estwaldGreatwolf.name}<h1><div>`);
 	$("#estwaldGreatwolf").append(`<img src="${estwaldGreatwolf.artwork}">`);
 			$("#estwaldGreatwolf").on("click", () => {
 		if (player2.unitBudget === 0) {
@@ -1076,6 +1062,9 @@ const werewolfStart = () => {
 
 // This is a function that will append all necessary gampelay interaction elements to the document.
 const initializeCombat = () => {
+	$(".currentFactionTurn").text(`Current Faction's Turn: ${game.activePlayer.faction}`);
+	$(".selectedUnit").text(`Selected Unit:`);
+	$(".targetedUnit").text(`Targeted Unit:`);
 	// This is the field in which combat actually takes place.
 	const gameBoard = [ [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
 						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
@@ -1107,36 +1096,69 @@ const initializeCombat = () => {
 
 	$("body").append(`<button id="endTurn">End Turn</button>`);
 	$(`#endTurn`).on("click", (e) => {
+		game.selectedUnit.resetSpeed();
 		if (game.activePlayer === player1) {
-			game.selectedUnit.speed = game.selectedUnit.defaultSpeed;
 		$("#primaryAttackButton").remove();
-		$("#secondaryAttackButton").remove();
+		$("#moveUpButton").remove();
+		$("#moveRightButton").remove();
+		$("#moveDownButton").remove();
+		$("#moveLeftButton").remove();
 			game.selectedUnit = "";
 			game.targetedUnit= "";
 			game.activePlayer = player2;
 			game.inactivePlayer = player1;
 			player1.actionPoints = 2;
-			console.log(`${game.activePlayer.faction} faction turn`);
+			$(".currentFactionTurn").text(`Current Faction's Turn: ${game.activePlayer.faction}`);
+			$(".selectedUnit").text(`Selected Unit:`);
+			$(".targetedUnit").text(`Targeted Unit:`);
 		} else {
-			game.selectedUnit.speed = game.selectedUnit.speed;
+		game.selectedUnit.resetSpeed();
 		$("#primaryAttackButton").remove();
-		$("#secondaryAttackButton").remove();
+		$("#moveUpButton").remove();
+		$("#moveRightButton").remove();
+		$("#moveDownButton").remove();
+		$("#moveLeftButton").remove();
 			game.selectedUnit = "";
 			game.targetedUnit= "";
 			game.activePlayer = player1;
 			game.inactivePlayer = player2;
 			player2.actionPoints = 2;
-			console.log(`${game.activePlayer.faction} faction turn`);
+			$(".currentFactionTurn").text(`Current Faction's Turn: ${game.activePlayer.faction}`);
+			$(".selectedUnit").text(`Selected Unit:`);
+			$(".targetedUnit").text(`Targeted Unit:`);
 		}
 	});
 
 	const displayUnitFunctions = () => {
 		$("#primaryAttackButton").remove();
+		$("#moveUpButton").remove();
+		$("#moveRightButton").remove();
+		$("#moveDownButton").remove();
+		$("#moveLeftButton").remove();
 		$("body").append(`<button id="primaryAttackButton">${game.selectedUnit.name} Primary Attack</button>`);
 		$("#primaryAttackButton").on("click", (e) => {
-			console.log("primaryAttackButton clicked");
-			console.log(`${game.selectedUnit.deterimineHit()}`);
+			$(`.alerts`).text(`${game.selectedUnit.name} is attacking ${game.targetedUnit.name}`);
+			$(`.alerts`).text(`${game.selectedUnit.deterimineHit()}`);
 		});
+			$("body").append(`<button id="moveUpButton">Move ${game.selectedUnit.name} up</button>`);
+	$("#moveUpButton").on("click", (e) => {
+		game.selectedUnit.moveUp();
+	});
+
+	$("body").append(`<button id="moveRightButton">Move ${game.selectedUnit.name} right</button>`);
+		$("#moveRightButton").on("click", (e) => {
+		game.selectedUnit.moveRight();
+	});
+
+	$("body").append(`<button id="moveDownButton">Move ${game.selectedUnit.name} down</button>`);
+		$("#moveDownButton").on("click", (e) => {
+		game.selectedUnit.moveDown();
+	});
+
+	$("body").append(`<button id="moveLeftButton">Move ${game.selectedUnit.name} left</button>`);
+		$("#moveLeftButton").on("click", (e) => {
+		game.selectedUnit.moveLeft();
+	});
 	};
 
 	$(".game-square").on("click", (e) => {
@@ -1148,12 +1170,13 @@ const initializeCombat = () => {
 				console.log(`${unit.name} has been selected.`);
 				game.selectedUnit = unit;
 				console.log(game.selectedUnit);
+				$(".selectedUnit").text(`Selected Unit: ${game.selectedUnit.name}`);
 				displayUnitFunctions();
 			}
 		}	
 	});
 
-		$(".game-square").on("click", (e) => {
+	$(".game-square").on("click", (e) => {
 		let clickedX = $(e.currentTarget).data("x");
 		let clickedY = $(e.currentTarget).data("y");
 		for (i = 0; i < game.inactivePlayer.chosenUnits.length; i++) {
@@ -1161,10 +1184,11 @@ const initializeCombat = () => {
 			if (unit.xCoordinate === clickedX && unit.yCoordinate === clickedY) {
 				console.log(`${unit.name} has been targeted.`);
 				game.targetedUnit = unit;
+				$(".targetedUnit").text(`Targeted Unit: ${game.targetedUnit.name}`);
 				console.log(game.targetedUnit);
 			}
 		}	
-	});	
+	});
 };
 
 

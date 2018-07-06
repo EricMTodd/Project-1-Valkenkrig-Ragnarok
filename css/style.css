@@ -1,6 +1,10 @@
 body {
 	background-color: gray;
 	list-style: none;
+	font-family: 'Cinzel', serif;
+	font-weight: bold;
+	margin: 0;
+    text-align: center;
 }
 .game-square {
 	width: 25px;
