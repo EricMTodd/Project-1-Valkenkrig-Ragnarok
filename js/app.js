@@ -138,14 +138,23 @@ class BasicUnit {
 		}
 	}
 	deterimineHit() {
-
-	}
-	primaryAttack() {
 		if (this.weapon1.type === "Melee") {
-			return this.weapon1.damage() + this.strMod();
+			if (roll20() + this.strMod() > game.targetedUnit.ac) {
+				console.log("Hit!");
+				game.targetedUnit.hp = this.weapon1.damage() + this.strMod() - game.targetedUnit.hp;
+				return game.targetedUnit.deathState();
+			} else {
+				return "Miss!";
+			}
 		} else if (this.weapon1.type === "Ranged") {
-			return this.weapon1.damage() + this.dexMod();
-		} 
+			if (roll20() + this.dexMod() > game.targetedUnit.ac) {
+				console.log("Hit!");
+				game.targetedUnit.hp = this.weapon1.damage() + this.dexMod() - game.targetedUnit.hp;
+				return game.targetedUnit.deathState();
+			} else {
+				return "Miss!";
+			}
+		}
 	}
 	secondaryAttack() {
 		if (this.weapon2.type === "Melee") {
@@ -162,6 +171,14 @@ class BasicUnit {
 	}
 	intMod() {
 		return Math.floor((this.int - 10)/2);
+	}
+	deathState() {
+		if (this.hp <= 0) {
+			$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).removeAttr("id").css("background-image", "none");
+			return `${this.name} has died`;
+		} else {
+			return `${this.hp}`;
+		}
 	}
 };
 
@@ -190,6 +207,23 @@ class Falkenrath extends BasicUnit {
 	constructor(id, name, gender, faction, race, hp, ac, str, dex, int, speed, defaultSpeed, weapon1, weapon2, utility, budgetCost, artwork) {
 		super(id, name, gender, faction, race, hp, ac, str, dex, int, speed, defaultSpeed, weapon1, weapon2, utility, budgetCost, artwork);
 	}
+	deterimineHit() {
+	if (this.weapon1.type === "Melee") {
+		if (roll20() + this.strMod() > game.targetedUnit.ac) {
+			this.primaryAttack();
+			return "Hit!";
+		} else {
+			return "Miss!";
+		}
+	} else if (this.weapon1.type === "Ranged") {
+		if (roll20() + this.dexMod() > game.targetedUnit.ac) {
+			this.primaryAttack();
+			return "Hit!";
+		} else {
+			return "Miss!";
+		}
+	}
+}
 	// This method simulates weapon finesse for all Falkenrath units, maximizing combat damage with all weapon types.
 	primaryAttack() {
 		if (this.str > this.dex) {
@@ -219,7 +253,8 @@ class Werewolf extends BasicUnit {
 
 		this.shapeShiftId.placeUnit(`${this.xCoordinate}`, `${this.yCoordinate}`);
 		this.shapeShiftId.render();
-
+		game.selectedUnit = this.shapeShiftId;
+		$(`.game-square-${this.xCoordinate}-${this.yCoordinate}`).click();
 		return "Transformation Complete";
 	}
 	// Werewolves' health regenerates over time and can only be cancelled out by silvered weapons.
@@ -255,7 +290,7 @@ const player2 = new Player("Werewolf", 2);
 // GAME OBJECT //
 const game = {	
 	activePlayer: player1,
-	inactivePlayer: player2
+	inactivePlayer: player2,
 	};
 
 // WEAPONS OBJECTS //
@@ -1073,30 +1108,63 @@ const initializeCombat = () => {
 	$("body").append(`<button id="endTurn">End Turn</button>`);
 	$(`#endTurn`).on("click", (e) => {
 		if (game.activePlayer === player1) {
+			game.selectedUnit.speed = game.selectedUnit.defaultSpeed;
+		$("#primaryAttackButton").remove();
+		$("#secondaryAttackButton").remove();
+			game.selectedUnit = "";
+			game.targetedUnit= "";
 			game.activePlayer = player2;
-			console.log(game.activePlayer.faction);
+			game.inactivePlayer = player1;
+			player1.actionPoints = 2;
+			console.log(`${game.activePlayer.faction} faction turn`);
 		} else {
+			game.selectedUnit.speed = game.selectedUnit.speed;
+		$("#primaryAttackButton").remove();
+		$("#secondaryAttackButton").remove();
+			game.selectedUnit = "";
+			game.targetedUnit= "";
 			game.activePlayer = player1;
-			console.log(game.activePlayer.faction);
+			game.inactivePlayer = player2;
+			player2.actionPoints = 2;
+			console.log(`${game.activePlayer.faction} faction turn`);
 		}
 	});
 
+	const displayUnitFunctions = () => {
+		$("#primaryAttackButton").remove();
+		$("body").append(`<button id="primaryAttackButton">${game.selectedUnit.name} Primary Attack</button>`);
+		$("#primaryAttackButton").on("click", (e) => {
+			console.log("primaryAttackButton clicked");
+			console.log(`${game.selectedUnit.deterimineHit()}`);
+		});
+	};
+
 	$(".game-square").on("click", (e) => {
-		console.log(e.currentTarget);
 		let clickedX = $(e.currentTarget).data("x");
-		console.log(clickedX);
 		let clickedY = $(e.currentTarget).data("y");
-		console.log(clickedY);
 		for (i = 0; i < game.activePlayer.chosenUnits.length; i++) {
 			let unit = game.activePlayer.chosenUnits[i];
 			if (unit.xCoordinate === clickedX && unit.yCoordinate === clickedY) {
-				console.log(`${unit.name} has been clicked.`);
+				console.log(`${unit.name} has been selected.`);
 				game.selectedUnit = unit;
 				console.log(game.selectedUnit);
+				displayUnitFunctions();
 			}
 		}	
 	});
-	$(`body`).append(`<button></button>`);
+
+		$(".game-square").on("click", (e) => {
+		let clickedX = $(e.currentTarget).data("x");
+		let clickedY = $(e.currentTarget).data("y");
+		for (i = 0; i < game.inactivePlayer.chosenUnits.length; i++) {
+			let unit = game.inactivePlayer.chosenUnits[i];
+			if (unit.xCoordinate === clickedX && unit.yCoordinate === clickedY) {
+				console.log(`${unit.name} has been targeted.`);
+				game.targetedUnit = unit;
+				console.log(game.targetedUnit);
+			}
+		}	
+	});	
 };
 
 
