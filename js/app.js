@@ -333,7 +333,7 @@ const falcon1837 = new Weapon("falcon1837", "Falcon 1837", "Ranged", 40);
 const darianFalkenrath = new Falkenrath("darianFalkenrath", "Darian Falkenrath", "Male", "Falkenrath", "Vampire", 32, 26, 21, 46, 14, 60, 60, vorpalSword, "", "", 0, "images/unitTokens/Darian_Falkenrath.png");
 
 // Falkenrath Enforcer
-const falkenrathEnforcer = new Falkenrath("falkenrathEnforcer", "Falkenrath Enforcer", "Male", "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, 30, vorpalSword, "", "", 75, "images/UnitTokens/Falkenrath_Enforcer.png");
+const falkenrathEnforcer = new Falkenrath("falkenrathEnforcer", "Falkenrath Enforcer", "Male", "Falkenrath", "Human", 24, 20, 14, 26, 12, 30, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath_Enforcer.png");
 
 // Falkenrath Undertaker
 const falkenrathUndertaker = new Falkenrath("falkenrathUndertaker", "Falkenrath Undertaker", "Unknown", "Falkenrath", "Unknown", 12, 12, 16, 12, 20, 30, 30, vorpalSword, "", "", 75, "images/unitTokens/Falkenrath_Undertaker.png");
