@@ -250,11 +250,12 @@ class Weapon {
 // PLAYER OBJECTS //
 const player1 = new Player("Falkenrath", 2);
 
-const player2 = new Player("Werewolves", 2);
+const player2 = new Player("Werewolf", 2);
 
 // GAME OBJECT //
 const game = {	
-	activePlayer: player1
+	activePlayer: player1,
+	inactivePlayer: player2
 	};
 
 // WEAPONS OBJECTS //
@@ -1069,6 +1070,17 @@ const initializeCombat = () => {
 	falkenrathStart();
 	werewolfStart();
 
+	$("body").append(`<button id="endTurn">End Turn</button>`);
+	$(`#endTurn`).on("click", (e) => {
+		if (game.activePlayer === player1) {
+			game.activePlayer = player2;
+			console.log(game.activePlayer.faction);
+		} else {
+			game.activePlayer = player1;
+			console.log(game.activePlayer.faction);
+		}
+	});
+
 	$(".game-square").on("click", (e) => {
 		console.log(e.currentTarget);
 		let clickedX = $(e.currentTarget).data("x");
@@ -1084,6 +1096,7 @@ const initializeCombat = () => {
 			}
 		}	
 	});
+	$(`body`).append(`<button></button>`);
 };
 
 
